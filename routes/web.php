@@ -2,13 +2,14 @@
 
 use App\Http\Controllers\GrupController;
 use App\Http\Controllers\PertanyaanController;
+use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\TuserController;
 use Illuminate\Support\Facades\Route;
 
 // ====== Sidebar ======
-Route::get('/', function () {
-    return view('survei');
-});
+// Route::get('/', function () {
+//     return view('survei');
+// });
 
 Route::get('/beranda', function () {
     return view('beranda');
@@ -56,6 +57,10 @@ Route::post('/manajemen-pertanyaan/submit', [PertanyaanController::class, 'submi
 Route::get('/edit-pertanyaan/{id}', [PertanyaanController::class, 'edit'])->name('manajemen-pertanyaan.edit');
 Route::post('/exedit-pertanyaan/{id}', [PertanyaanController::class, 'exedit'])->name('manajemen-pertanyaan.exedit');
 Route::post('/hapus-pertanyaan/{id}', [PertanyaanController::class, 'hapus'])->name('manajemen-pertanyaan.hapus');
+
+// ====== SURVEY ======
+Route::get('/', [SurveyController::class, 'tampilpertanyaan'])->name('survey.tampil');
+Route::post('/survey/submit', [SurveyController::class, 'submit'])->name('survey.submit');
 
 // ====== Hasil ======
 Route::get('/hasil/grafik-keseluruhan', function () {

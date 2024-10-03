@@ -46,7 +46,7 @@ class TuserController extends Controller
         $user->level                = $request->level;
         $user->save();
 
-        return redirect()->route('manajemen-user.tampil')->with('success', 'Data berhasil di edit.');
+        return redirect()->route('manajemen-user.tampil')->with('success', 'Data berhasil di tambah.');
     }
 
     function edit($id)

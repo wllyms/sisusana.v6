@@ -20,7 +20,7 @@
         <div class="col-md-12">
             <div class="card">
               <div class="card-header d-flex">
-                <div class="card-title">Laporan <button class="btn btn-primary btn-sm"><i class="fas fa-print"></i> Rekap Semua Kuisioner</button></div>
+                <div class="card-title" >Laporan <button class="btn btn-primary btn-sm" style="margin-left: 920px"><i class="fas fa-print"></i> Rekap Semua Kuisioner</button></div>
               </div>
               <div class="card-body">
                 <div class="row">

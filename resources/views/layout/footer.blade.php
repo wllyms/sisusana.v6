@@ -98,32 +98,6 @@
   });
 </script>
 
-{{-- sweetalert edit
-<script type="text/javascript">
-  $(function() {
-      // Konfirmasi sebelum menyimpan
-      $(document).on('click', '#edit', function(e) {
-          e.preventDefault();
-          var form = $('#form-edit-grup');
-  
-          Swal.fire({
-              title: "Konfirmasi",
-              text: "Apakah kamu yakin ingin menyimpan data ini?",
-              icon: "question",
-              showCancelButton: true,
-              confirmButtonColor: "#3085d6",
-              cancelButtonColor: "#d33",
-              confirmButtonText: "Ya, simpan",
-              cancelButtonText: "Tidak"
-          }).then((result) => {
-              if (result.isConfirmed) {
-                  // Submit form secara manual
-                  form.submit();
-              }
-          });
-      });
-  });
-</script> --}}
 
 {{-- sweetalert hapus --}}
 <script type="text/javascript">

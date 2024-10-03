@@ -96,8 +96,6 @@
 
           <div class="section-header">
             <h2>Survei Kepuasan Pasien</h2>
-            <p>Nulla dolorum nulla nesciunt rerum facere sed ut inventore quam porro nihil id ratione ea sunt quis dolorem
-              dolore earum</p>
           </div>
 
           <div class="row">
@@ -108,162 +106,158 @@
                 </div>
                 <div class="card-body ">
                   <div class="row justify-content-center">
-                    <table class="table table-bordered">
-                      <tr>
-                        <td class="row justify-content-center">
-                          <div class="col-xl-6 col-lg-4">
-                            <div class="form-group">
-                              <label for="usia">Usia</label>
-                              <input type="text" class="form-control" id="usia" placeholder="Usia (Tahun)"/>
-                            </div>
-      
-                            <div class="form-group">
-                              <label for="select1">Jenis Pasien</label>
-                              <select class="form-select" id="select1">
-                                <option value="Umum (Masyarakat/Perusahaan)">Umum (Masyarakat/Perusahaan)</option>
-                                <option value="Dinas (Anggota PNS/Polri)">Dinas (Anggota PNS/Polri)</option>
-                              </select>
-                            </div>
-                            
-                            <div class="form-group">
-                              <label for="select2">Jenis Kelamin</label>
-                              <select class="form-select" id="select2">
-                                <option value="Pria">Pria</option>
-                                <option value="Wanita">Wanita</option>
-                              </select>
-                            </div>
-                            
-                            <div class="form-group">
-                              <label for="select3">Pendidikan</label>
-                              <select class="form-select" id="select3">
-                                <option value="SD">SD</option>
-                                <option value="SMP">SMP</option>
-                                <option value="SMA">SMA</option>
-                                <option value="D3">D3</option>
-                                <option value="S1">S1</option>
-                                <option value="S2">S2</option>
-                                <option value="S3">S3</option>
-                              </select>
-                            </div>
-                            
-                            <div class="form-group">
-                              <label for="select4">Pekerjaan</label>
-                              <select class="form-select" id="select4">
-                                <option value="SD">PNS</option>
-                                <option value="TNI">TNI</option>
-                                <option value="POLRI">POLRI</option>
-                                <option value="Swasta">Swasta</option>
-                                <option value="Wirausaha">Wirausaha</option>
-                                <option value="Lainnya">Lainnya</option>
-                              </select>
-                            </div>
-                            
-                            <div class="form-group">
-                              <label for="select5">Jenis Layanan Yang Diterima</label>
-                              <select class="form-select" id="select5">
-                                <option value="Instalasi Rawat Jalan">Instalasi Rawat Jalan</option>
-                                <option value="Instalasi Rawat Inap">Instalasi Rawat Inap</option>
-                                <option value="Penunjang Medik">Penunjang Medik</option>
-                                <option value="Instalasi Gawat Darurat">Instalasi Gawat Darurat</option>
-                                <option value="Pendaftaran">Pendaftaran</option>
-                                <option value="MCU">MCU</option>
-                              </select>
-                            </div>
-                            
-                            <div class="form-group ">
-                              <label for="tanggal">Tanggal</label>
-                              <input type="date" class="form-control" id="tanggal" />
-                            </div>
-                            <br>
-                          </td>
-                      </tr>
-                      <tr>
-                          <td class="row justify-content-center text-center bordered">
-                            <br>
-                            <b class="text-center">Mohon kesediaan Anda untuk memberikan 
-                              penilaian dan masukan kepada RS Bhayangkara Banjarmasin, dimana hal ini sangat bermanfaat 
-                              untuk meningkatkan kualitas layanan kami.
-                            </b><br>
-                            <p>
-                              Silahkan diisi dengan mengklik option radio serta keterangan sesuai dengan penilaian Anda pada kolom yang telah disediakan
-                            </p>
-                            <br><br>
-                          </td>
-                      </tr>
-                      <tr>
-                        <td colspan="9">
-                          <table class="table table-bordered">
-                            <thead>
-                              <th width='3%' ><b><font face='Arial'>No</font></b></th>
-                              <th colspan='2'><p align='center'><b><font face='Arial'>DESKRIPSI</font></b></th>
-                              <th colspan="4" bgcolor='#FFFF00'><p align='center'><font face='Arial'>KUALITAS</font></th>   
-                            <tbody>
-                              <tr valign='top'>
-                                <td><font face='Arial' colspan='1'><b> 1</b></font></td>
-                                <td colspan='2'><font face='Arial'><b>Unsur Pelayanan</b></font></td>
-  
-                                <td class="bg-dark" height='25' width='8%'><p align='center'><font face='Arial' color='white'>A<br>(Sangat Baik)</font></td>
-                                <td class="bg-dark" height='25' width='8%'><p align='center'><font face='Arial' color='white'>B<br>(Baik)</font></td>
-                                <td class="bg-dark" height='25' width='8%'><p align='center'><font face='Arial' color='white'>C<br>(Cukup)</font></td>
-                                <td class="bg-dark" height='25' width='8%'><p align='center'><font face='Arial' color='white'>D<br>(Buruk)</font></td>
-                              </tr>
+                    <form action="{{ route('survey.submit') }}" method="post">
+                      @csrf
+                      <table class="table table-bordered">
+                        <tr>
+                          <td class="row justify-content-center">
+                            <div class="col-xl-6 col-lg-4">
+                              <div class="form-group">
+                                <label for="usia">Usia</label>
+                                <input type="text" class="form-control" id="usia" name="usia" placeholder="Usia (Tahun)" required/>
+                              </div>
+        
+                              <div class="form-group">
+                                <label for="select1">Jenis Pasien</label>
+                                <select class="form-select" id="select1" name="jpasien" required>
+                                  <option value="" disabled selected>- Pilih Jenis Pasien -</option>
+                                  <option value="Umum (Masyarakat/Perusahaan)">Umum (Masyarakat/Perusahaan)</option>
+                                  <option value="Dinas (Anggota PNS/Polri)">Dinas (Anggota PNS/Polri)</option>
+                                </select>
+                              </div>
+                              
+                              <div class="form-group">
+                                <label for="select2">Jenis Kelamin</label>
+                                <select class="form-select" id="select2" name="jkelamin" required>
+                                  <option value="" disabled selected>- Pilih Kelamin -</option>
+                                  <option value="Pria">Pria</option>
+                                  <option value="Wanita">Wanita</option>
+                                </select>
+                              </div>
+                              
+                              <div class="form-group">
+                                <label for="select3">Pendidikan</label>
+                                <select class="form-select" id="select3" name="pendidikan" required>
+                                  <option value="" disabled selected>- Pilih Pendidikan -</option>
+                                  <option value="SD">SD</option>
+                                  <option value="SMP">SMP</option>
+                                  <option value="SMA">SMA</option>
+                                  <option value="D3">D3</option>
+                                  <option value="S1">S1</option>
+                                  <option value="S2">S2</option>
+                                  <option value="S3">S3</option>
+                                </select>
+                              </div>
+                              
+                              <div class="form-group">
+                                <label for="select4">Pekerjaan</label>
+                                <select class="form-select" id="select4" name="pekerjaan" required>
+                                  <option value="" disabled selected>- Pilih Pekerjaan -</option>
+                                  <option value="SD">PNS</option>
+                                  <option value="TNI">TNI</option>
+                                  <option value="POLRI">POLRI</option>
+                                  <option value="Swasta">Swasta</option>
+                                  <option value="Wirausaha">Wirausaha</option>
+                                  <option value="Lainnya">Lainnya</option>
+                                </select>
+                              </div>
+                              
+                              <div class="form-group">
+                                <label for="select5">Jenis Layanan Yang Diterima</label>
+                                <select class="form-select" id="select5" name="jlayanan" required>
+                                  <option value="" disabled selected>- Pilih Jenis Layanan -</option>
+                                  <option value="Instalasi Rawat Jalan">Instalasi Rawat Jalan</option>
+                                  <option value="Instalasi Rawat Inap">Instalasi Rawat Inap</option>
+                                  <option value="Penunjang Medik">Penunjang Medik</option>
+                                  <option value="Instalasi Gawat Darurat">Instalasi Gawat Darurat</option>
+                                  <option value="Pendaftaran">Pendaftaran</option>
+                                  <option value="MCU">MCU</option>
+                                </select>
+                              </div>
+                              
+                              <div class="form-group ">
+                                <label for="tanggal">Tanggal</label>
+                                <input type="date" class="form-control" id="tanggal" name="tanggal"  />
+                              </div>
+                              <br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="row justify-content-center text-center bordered">
+                              <br>
+                              <b class="text-center">Mohon kesediaan Anda untuk memberikan 
+                                penilaian dan masukan kepada RS Bhayangkara Banjarmasin, dimana hal ini sangat bermanfaat 
+                                untuk meningkatkan kualitas layanan kami.
+                              </b><br>
+                              <p>
+                                Silahkan diisi dengan mengklik option radio serta keterangan sesuai dengan penilaian Anda pada kolom yang telah disediakan
+                              </p>
+                              <br><br>
+                            </td>
+                        </tr>
+                        <tr>
+                          <td colspan="9">
+                            <table class="table table-bordered">
+                              <thead>
+                                <th width='3%' ><b><font face='Arial'>No</font></b></th>
+                                <th colspan='2'><p align='center'><b><font face='Arial'>DESKRIPSI</font></b></th>
+                                <th colspan="4" bgcolor='#FFFF00'><p align='center'><font face='Arial'>KUALITAS</font></th>   
+                              <tbody>
+                                <tr valign='top'>
+                                  <td><font face='Arial' colspan='1'><b> 1</b></font></td>
+                                  <td colspan='2'><font face='Arial'><b>Unsur Pelayanan</b></font></td>
+    
+                                  <td class="bg-dark" height='25' width='8%'><p align='center'><font face='Arial' color='white'>A<br>(Sangat Baik)</font></td>
+                                  <td class="bg-dark" height='25' width='8%'><p align='center'><font face='Arial' color='white'>B<br>(Baik)</font></td>
+                                  <td class="bg-dark" height='25' width='8%'><p align='center'><font face='Arial' color='white'>C<br>(Cukup)</font></td>
+                                  <td class="bg-dark" height='25' width='8%'><p align='center'><font face='Arial' color='white'>D<br>(Buruk)</font></td>
+                                </tr>
+                                
+                                @foreach ($pertanyaan as $data)
                                 <tr>
-                                  <td colspan='1'></td>
-                                             
-                                  <td colspan='2'><font face='Arial'> Bagaimana penilaian anda tentang kemudahan persyaratan administrasi untuk mendapatkan pelayanan						</font></td>
-                                  <td align='center'> <input type='radio' name='asfa112' value='4'> </td>
-                                  <td align='center'> <input type='radio' name='asfa112' value='3'> </td>
-                                  <td align='center'> <input type='radio' name='asfa112' value='2'> </td>
-                                  <td align='center'> <input type='radio' name='asfa112' value='1'> </td>
-                                  </tr><tr>
-                                  <td colspan='1'></td>
-                                             
-                                  <td colspan='2'><font face='Arial'> Bagaimana pendapat Saudara tentang kemudahan prosedur pelayanan di unit ini?</font></td>
-                                  <td align='center'> <input type='radio' name='asfa212' value='4'> </td>
-                                  <td align='center'> <input type='radio' name='asfa212' value='3'> </td>
-                                  <td align='center'> <input type='radio' name='asfa212' value='2'> </td>
-                                  <td align='center'> <input type='radio' name='asfa212' value='1'> </td>
-                                  </tr><tr>
-                                  <td colspan='1'></td>
-                                             
-                                  <td colspan='2'><font face='Arial'> Bagaimana pendapat Saudara tentang kecepatan waktu dalam memberikan pelayanan?</font></td>
-                                  <td align='center'> <input type='radio' name='asfa312' value='4'> </td>
-                                  <td align='center'> <input type='radio' name='asfa312' value='3'> </td>
-                                  <td align='center'> <input type='radio' name='asfa312' value='2'> </td>
-                                  <td align='center'> <input type='radio' name='asfa312' value='1'> </td>
-                                  </tr><br>                                        
+                                    <td colspan='1'></td>
+                                    
+                                    <td colspan='2'><font face='Arial'>{{ $data->pertanyaan }}</font></td>
+
+                                    <td align='center'> <input type='radio' name='jawaban_{{ $data->id }}' value='A'> </td>
+                                    <td align='center'> <input type='radio' name='jawaban_{{ $data->id }}' value='B'> </td>
+                                    <td align='center'> <input type='radio' name='jawaban_{{ $data->id }}' value='C'> </td>
+                                    <td align='center'> <input type='radio' name='jawaban_{{ $data->id }}' value='D'> </td>
+                                  </tr>
+                                  @endforeach
+                                <br>
                               </tbody>
-                          </table>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td colspan="8">    
-                          <div class="well">
-                            <div class="form-group">
-                              <label for="kritik">Kritik dan Saran</label>
-                              <textarea name='kritik' class="form-control" rows="5" placeholder="Tulis Kritik dan Saran..."></textarea>
+                            </table>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td colspan="8">    
+                            <div class="well">
+                              <div class="form-group">
+                                <label for="kritik">Kritik dan Saran</label>
+                                <textarea name='kritik' class="form-control" rows="5" placeholder="Tulis Kritik dan Saran..." required></textarea>
+                              </div>
                             </div>
+                            <hr>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="card-action text-center">
+                              <button class="btn btn-success">Simpan</button>
                           </div>
-                          <hr>
-                        </td>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td width="97%" valign="top" align="center" colspan="5" style="border-style: none; border-width: medium">
+                          <center class="well">
+                          <p>Terima Kasih Atas Waktu dan Masukan yang anda berikan,Semua masukan yang anda berikan </p>
+                          <p>akan kami terima sebagai sarana bagi kami untuk meningkatkan kulaitas pelanan kami</p>
+                          </center>
+                          </td>
                       </tr>
-                      <tr>
-                        <td>
-                          <div class="card-action text-center">
-                            <button class="btn btn-success">Simpan</button>
-                        </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td width="97%" valign="top" align="center" colspan="5" style="border-style: none; border-width: medium">
-                        <center class="well">
-                        <p>Terima Kasih Atas Waktu dan Masukan yang anda berikan,Semua masukan yang anda berikan </p>
-                        <p>akan kami terima sebagai sarana bagi kami untuk meningkatkan kulaitas pelanan kami</p>
-                        </center>
-                        </td>
-                    </tr>
-                    </table>
-                    
+                      </table>
+                    </form>
 
                     </div>
                   </div>
@@ -337,6 +331,88 @@
 
   <!-- Template Main JS File -->
   <script src="{{asset('assets')}}/js/main.js"></script>
+
+  
+{{-- sweetalert 2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+{{-- JS Sweet Start --}}
+
+@if (session('success'))
+<script type="text/javascript">
+    $(function() {
+        Swal.fire({
+            title: "Disimpan!",
+            text: "{{ session('success') }}",
+            icon: "success"
+        });
+    });
+</script>
+@endif
+
+{{-- sweetalert tambah --}}
+<script type="text/javascript">
+  $(function() {
+      // Konfirmasi sebelum menyimpan
+      $(document).on('click', '#tambah', function(e) {
+          e.preventDefault();
+          var form = $('#form-tambah-grup');
+  
+          Swal.fire({
+              title: "Konfirmasi",
+              text: "Apakah kamu yakin ingin menyimpan data ini?",
+              icon: "question",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Ya, simpan",
+              cancelButtonText: "Tidak"
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  // Submit form secara manual
+                  form.submit();
+              }
+          });
+      });
+  });
+</script>
+
+
+{{-- sweetalert hapus --}}
+<script type="text/javascript">
+  $(function(){
+    // Tombol Hapus
+    $(document).on('click', '#hapus', function(e){
+      e.preventDefault();
+      var form = $(this).closest("form");
+
+      Swal.fire({
+        title: "Peringatan",
+        text: "Apakah kamu yakin akan menghapus data ini?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#4CAF50",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, hapus",
+        cancelButtonText: "Tidak"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
+          Swal.fire({
+            title: "Terhapus!",
+            text: "Data berhasil dihapus.",
+            icon: "success"
+          });
+          
+        }
+      });
+    });
+
+  });
+</script>
 
 </body>
 
