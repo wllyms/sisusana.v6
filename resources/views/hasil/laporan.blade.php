@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.gmain')
 
 @section('title','Laporan | SISUSANA')
 @section('namepage','HASIL KUISIONER')
@@ -10,8 +10,8 @@
                 <form class="container-fluid justify-content-start">
                     <a href="/hasil/grafik-keseluruhan" class="btn btn-outline-secondary me-2">
                         Grafik Keseluruhan</a>
-                    <a href="/hasil/grafik-pertanyaan" class="btn btn-outline-secondary me-2">
-                        Grafik Per Pertanyaan</a>
+                        <a href="/hasil/persentase-pertanyaan" class="btn btn-outline-secondary me-2">
+                          Persentase Pertanyaan</a>
                     <a href="/hasil/laporan" class="btn btn-outline-secondary me-2">
                         Laporan</a>
                 </form>
@@ -63,8 +63,13 @@
                             <select
                                 class="form-select form-control"
                                 id="layanan" name="layanan">
-                                <option>Semua Layanan</option>
-                                <option>1</option>
+                                <option value="" disabled selected>- Pilih Jenis Layanan -</option>
+                                <option value="Instalasi Rawat Jalan">Instalasi Rawat Jalan</option>
+                                <option value="Instalasi Rawat Inap">Instalasi Rawat Inap</option>
+                                <option value="Penunjang Medik">Penunjang Medik</option>
+                                <option value="Instalasi Gawat Darurat">Instalasi Gawat Darurat</option>
+                                <option value="Pendaftaran">Pendaftaran</option>
+                                <option value="MCU">MCU</option>
                             </select>
                         </div>
                     </div>

@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.gmain')
 
 @section('title','Grafik Keseluruhan | SISUSANA')
 @section('namepage','HASIL KUISIONER')
@@ -10,8 +10,8 @@
                 <form class="container-fluid justify-content-start">
                 <a href="/hasil/grafik-keseluruhan" class="btn btn-outline-secondary me-2">
                     Grafik Keseluruhan</a>
-                <a href="/hasil/grafik-pertanyaan" class="btn btn-outline-secondary me-2">
-                    Grafik Per Pertanyaan</a>
+                <a href="/hasil/persentase-pertanyaan" class="btn btn-outline-secondary me-2">
+                    Persentase Pertanyaan</a>
                 <a href="/hasil/laporan" class="btn btn-outline-secondary me-2">
                     Laporan</a>
                 </form>
@@ -30,7 +30,7 @@
               </div>
               <div>
                 <div class="card-header">
-                  <h5>Jumlah Responden : </h5>
+                  <h5>Jumlah Responden : {{ $totRespon }} orang</h5>
                 </div>
                 <div class="card-body">
                   <table class="table">
@@ -44,19 +44,20 @@
                       </tr>
                     </thead>
                     <tbody>
+                    
                       <tr>
                         <td>Jumlah Jawaban</td>
-                        <td>25</td>
-                        <td>25</td>
-                        <td>25</td>
-                        <td>25</td>
+                        <td>{{ $jumlahA }}</td>
+                        <td>{{ $jumlahB }}</td>
+                        <td>{{ $jumlahC }}</td>
+                        <td>{{ $jumlahD }}</td>
                       </tr>
                       <tr>
                         <td>Persentase</td>
-                        <td>25%</td>
-                        <td>25%</td>
-                        <td>25%</td>
-                        <td>25%</td>
+                        <td>{{ $persenA }}%</td>
+                        <td>{{ $persenB }}%</td>
+                        <td>{{ $persenC }}%</td>
+                        <td>{{ $persenD }}%</td>
                       </tr>
                     </tbody>
                   </table>

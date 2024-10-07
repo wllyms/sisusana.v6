@@ -107,6 +107,7 @@
                 <div class="card-body ">
                   <div class="row justify-content-center">
                     <form action="{{ route('survey.submit') }}" method="post">
+                      
                       @csrf
                       <table class="table table-bordered">
                         <tr>
@@ -129,7 +130,7 @@
                               <div class="form-group">
                                 <label for="select2">Jenis Kelamin</label>
                                 <select class="form-select" id="select2" name="jkelamin" required>
-                                  <option value="" disabled selected>- Pilih Kelamin -</option>
+                                  <option value="" disabled selected>- Pilih Jenis Kelamin -</option>
                                   <option value="Pria">Pria</option>
                                   <option value="Wanita">Wanita</option>
                                 </select>
@@ -177,7 +178,7 @@
                               
                               <div class="form-group ">
                                 <label for="tanggal">Tanggal</label>
-                                <input type="date" class="form-control" id="tanggal" name="tanggal"  />
+                                <input type="text" class="form-control" id="tanggal" name="tanggal" value="{{ now()->format('d-m-Y') }}" readonly />
                               </div>
                               <br>
                             </td>
@@ -202,10 +203,14 @@
                                 <th width='3%' ><b><font face='Arial'>No</font></b></th>
                                 <th colspan='2'><p align='center'><b><font face='Arial'>DESKRIPSI</font></b></th>
                                 <th colspan="4" bgcolor='#FFFF00'><p align='center'><font face='Arial'>KUALITAS</font></th>   
+                              </thead>
+                              @foreach ($grup as $no=>$item)
+                                  
+                              
                               <tbody>
-                                <tr valign='top'>
-                                  <td><font face='Arial' colspan='1'><b> 1</b></font></td>
-                                  <td colspan='2'><font face='Arial'><b>Unsur Pelayanan</b></font></td>
+                                <tr valign='top'> 
+                                  <td><font face='Arial' colspan='1'><b>{{ $no+1 }}</b></font></td>
+                                  <td colspan='2'><font face='Arial'><b>{{ $item->nama_grup }}</b></font></td>
     
                                   <td class="bg-dark" height='25' width='8%'><p align='center'><font face='Arial' color='white'>A<br>(Sangat Baik)</font></td>
                                   <td class="bg-dark" height='25' width='8%'><p align='center'><font face='Arial' color='white'>B<br>(Baik)</font></td>
@@ -219,14 +224,15 @@
                                     
                                     <td colspan='2'><font face='Arial'>{{ $data->pertanyaan }}</font></td>
 
-                                    <td align='center'> <input type='radio' name='jawaban_{{ $data->id }}' value='A'> </td>
-                                    <td align='center'> <input type='radio' name='jawaban_{{ $data->id }}' value='B'> </td>
-                                    <td align='center'> <input type='radio' name='jawaban_{{ $data->id }}' value='C'> </td>
-                                    <td align='center'> <input type='radio' name='jawaban_{{ $data->id }}' value='D'> </td>
-                                  </tr>
-                                  @endforeach
-                                <br>
+                                    <td align='center'> <input type='radio' name='jawaban[{{ $data->id }}]' value='A' required> </td>
+                                    <td align='center'> <input type='radio' name='jawaban[{{ $data->id }}]' value='B' required> </td>
+                                    <td align='center'> <input type='radio' name='jawaban[{{ $data->id }}]' value='C' required> </td>
+                                    <td align='center'> <input type='radio' name='jawaban[{{ $data->id }}]' value='D' readonly> </td>
+                                </tr>
+                                @endforeach
+                                <br> 
                               </tbody>
+                              @endforeach
                             </table>
                           </td>
                         </tr>

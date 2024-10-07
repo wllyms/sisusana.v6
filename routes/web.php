@@ -1,19 +1,13 @@
 <?php
 
-use App\Http\Controllers\GrupController;
-use App\Http\Controllers\PertanyaanController;
-use App\Http\Controllers\SurveyController;
-use App\Http\Controllers\TuserController;
 use Illuminate\Support\Facades\Route;
-
-// ====== Sidebar ======
-// Route::get('/', function () {
-//     return view('survei');
-// });
-
-Route::get('/beranda', function () {
-    return view('beranda');
-});
+use App\Http\Controllers\GrupController;
+use App\Http\Controllers\SesiController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\TuserController;
+use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\JawabanController;
+use App\Http\Controllers\PertanyaanController;
 
 Route::get('/manajemen-pertanyaan', function () {
     return view('manajemen-pertanyaan.tampil');
@@ -32,6 +26,22 @@ Route::get('/adminlogin', function () {
 });
 
 
+// ====== Login ======
+Route::middleware('guest')->group(function () {
+    Route::get('/adminlogin', [SesiController::class, 'index']);
+    Route::post('/adminlogin', [SesiController::class, 'login']);
+});
+
+Route::get('/login-admin', function () {
+    return view('login-admin');
+});
+
+Route::get('/logout', [SesiController::class, 'logout']);
+Route::get('/admin', [JawabanController::class, 'index']);
+
+
+// ====== BERANDA ======
+Route::get('/beranda', [JawabanController::class, 'tampiljawaban'])->name('beranda.tampiljawaban');
 
 // ====== Manajemen User ======
 Route::get('/manajemen-user', [TuserController::class, 'tampil'])->name('manajemen-user.tampil');
@@ -63,18 +73,6 @@ Route::get('/', [SurveyController::class, 'tampilpertanyaan'])->name('survey.tam
 Route::post('/survey/submit', [SurveyController::class, 'submit'])->name('survey.submit');
 
 // ====== Hasil ======
-Route::get('/hasil/grafik-keseluruhan', function () {
-    return view('hasil.grafik-keseluruhan');
-});
-
-Route::get('/hasil/grafik-pertanyaan', function () {
-    return view('hasil.grafik-pertanyaan');
-});
-
-Route::get('/hasil/kritikdansaran', function () {
-    return view('hasil.kritikdansaran');
-});
-
-Route::get('/hasil/laporan', function () {
-    return view('hasil.laporan');
-});
+Route::get('/hasil/grafik-keseluruhan', [JawabanController::class, 'tampilgrafikkeseluruhan'])->name('hasil.tampilgrafikkeseluruhan');
+Route::get('/hasil/persentase-pertanyaan', [JawabanController::class, 'tampilpersenpertanyaan'])->name('hasil.tampilpersenkeseluruhan');
+Route::get('/hasil/laporan', [JawabanController::class, 'tampillaporan'])->name('hasil.laporan');

@@ -69,8 +69,8 @@
                                             <i class="icon-shuffle"></i>
                                         </span>
                                         <select class="form-select form-control" id="defaultSelect" name="level">
-                                            <option>Admin Biasa</option>
-                                            <option>Super Admin</option>
+                                            <option value="Admin Biasa">Admin Biasa</option>
+                                            <option value="Super Admin">Super Admin</option>
                                         </select>
                                     </div>
                                 </div>

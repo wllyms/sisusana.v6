@@ -71,7 +71,7 @@
 </script>
 @endif
 
-{{-- sweetalert tambah --}}
+{{-- sweetalert tambah dan edit --}}
 <script type="text/javascript">
   $(function() {
       // Konfirmasi sebelum menyimpan
@@ -132,7 +132,7 @@
   });
 </script>
 
-{{-- JS Sweet End --}}
+
 
 {{-- datatable start --}}
 <script>
@@ -193,53 +193,6 @@
   });
 </script>
 {{-- datatable end --}}
-
-{{-- grafik start --}}
-<script>
-  var totSurvei = document.getElementById("totSurvei").getContext("2d");
-
-  var myTotSurvei = new Chart(totSurvei, {
-    type: "pie",
-    data: {
-      datasets: [
-        {
-          data: [40, 30, 25, 5],
-          backgroundColor: ["#1572e8","#48abf7", "#ffad46", "#f25961"],
-          borderWidth: 0,
-        },
-      ],
-      labels: ["Sangat Baik","Baik", "Cukup", "Buruk"],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      legend: {
-        position: "bottom",
-        labels: {
-          fontColor: "rgb(154, 154, 154)",
-          fontSize: 11,
-          usePointStyle: true,
-          padding: 20,
-        },
-      },
-      pieceLabel: {
-        render: "percentage",
-        fontColor: "white",
-        fontSize: 14,
-      },
-      tooltips: false,
-      layout: {
-        padding: {
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: 20,
-        },
-      },
-    },
-  });
-</script>
-{{-- grafik end --}}
 
 </body>
 </html>

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('pekerjaan');
             $table->string('jlayanan');
             $table->string('kritik');
-            $table->date('tanggal');
+            $table->string('tanggal');
             
             $table->timestamps();
         });

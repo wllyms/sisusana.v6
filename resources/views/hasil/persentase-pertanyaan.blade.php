@@ -1,4 +1,4 @@
-@extends('layout.main')
+@extends('layout.gmain')
 
 @section('title','Grafik Per Pertanyaan | SISUSANA')
 @section('namepage','HASIL KUISIONER')
@@ -10,8 +10,8 @@
                 <form class="container-fluid justify-content-start">
                     <a href="/hasil/grafik-keseluruhan" class="btn btn-outline-secondary me-2">
                         Grafik Keseluruhan</a>
-                    <a href="/hasil/grafik-pertanyaan" class="btn btn-outline-secondary me-2">
-                        Grafik Per Pertanyaan</a>
+                    <a href="/hasil/persentase-pertanyaan" class="btn btn-outline-secondary me-2">
+                        Persentase Pertanyaan</a>
                     <a href="/hasil/laporan" class="btn btn-outline-secondary me-2">
                         Laporan</a>
                 </form>
@@ -20,7 +20,7 @@
         <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <div class="card-title">Grafik per Unsur Pelayanan</div>
+                <div class="card-title">Grafik per Layanan</div>
               </div>
               <div class="card-body">
                 <div class="row">
@@ -63,8 +63,13 @@
                             <select
                                 class="form-select form-control"
                                 id="layanan" name="layanan">
-                                <option>Semua Layanan</option>
-                                <option>1</option>
+                                <option value="" disabled selected>- Pilih Jenis Layanan -</option>
+                                <option value="Instalasi Rawat Jalan">Instalasi Rawat Jalan</option>
+                                <option value="Instalasi Rawat Inap">Instalasi Rawat Inap</option>
+                                <option value="Penunjang Medik">Penunjang Medik</option>
+                                <option value="Instalasi Gawat Darurat">Instalasi Gawat Darurat</option>
+                                <option value="Pendaftaran">Pendaftaran</option>
+                                <option value="MCU">MCU</option>
                             </select>
                         </div>
                     </div>
@@ -78,7 +83,7 @@
             <div class="alert alert-info" role="alert">
                 Menampilkan Semua Data 
                 <br>
-                         Jumlah Responden : <b> 4722 Responden </b>
+                         Jumlah Responden : <b> 4705 Responden </b>
                 <br><br>
            </div>
            <div class="container p-0">
@@ -87,20 +92,11 @@
                         <div class="card-header">
                             <h5>Pertanyaan 1</h5>
                         </div>
-                        <div class="card-body">
-                            <h6>Persentase Jawaban Unsur Pelayanan</h6>
-                            <div class="chart-container">
-                            <canvas
-                                id="totSurvei"
-                                style="width: 50%; height: 50%"
-                            ></canvas>
-                            </div>
-                        </div>
                         <div>
                             <div class="card-body">
                               <table class="table">
                                 <thead>
-                                  <tr>
+                                  <tr class="text-center">
                                     <th scope="col">Data</th>
                                     <th scope="col">Sangat Baik</th>
                                     <th scope="col">Baik</th>
@@ -108,24 +104,24 @@
                                     <th scope="col">Buruk</th>
                                   </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="text-center">
                                   <tr>
                                     <td>Jumlah Jawaban</td>
-                                    <td>25</td>
-                                    <td>25</td>
-                                    <td>25</td>
-                                    <td>25</td>
+                                    <td>4095</td>
+                                    <td>588</td>
+                                    <td>12</td>
+                                    <td>10</td>
                                   </tr>
                                   <tr>
                                     <td>Persentase</td>
-                                    <td>25%</td>
-                                    <td>25%</td>
-                                    <td>25%</td>
-                                    <td>25%</td>
+                                    <td>87%</td>
+                                    <td>12%</td>
+                                    <td>0%</td>
+                                    <td>0%</td>
                                   </tr>
                                 </tbody>
                               </table>
-                              <p class="ms-4">Nilai Rata-rata: 3.85 = 96.25%</p>
+                              <p class="ms-4">Nilai Rata-rata: 3.86 = 96.5%</p>
                             </div>
                         </div>
                     </div>

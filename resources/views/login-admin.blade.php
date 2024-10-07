@@ -1,6 +1,6 @@
 @extends('layout.main-login')
 @section('title', 'Beranda | SISUSANA')
-@section('namepage', 'SISUSANA - aplikaSI SUrvey kepuaSAN pAsien')
+@section('namepage', 'SISUSANA')
 @section('content')
 
     <div class="page-inner">
@@ -17,14 +17,18 @@
                     <div class="row d-flex justify-content-center">
                         <div class="col-lg-4">
                             <h2 class="fw-bold mb-5">SISUSANA LOGIN</h2>
-                            <form action="" method="">
+                            @if (session('Gagal'))
+                                <p class="text-danger">{{ session('Gagal') }}</p>
+                            @endif
+                            <form action="" method="POST">
+                                @csrf
                                 <div data-mdb-input-init class="form-outline mb-4">
                                     <div class="input-group p-0">
                                         <span class="input-group-text">
                                             <i class="icon-user"></i>
                                         </span>
-                                        <input type="password" class="form-control" name="username" id="username"
-                                            placeholder="Username" />
+                                        <input type="text" class="form-control" value="{{ old('username') }}"
+                                            name="username" id="username" placeholder="Username" />
                                     </div>
                                 </div>
 
@@ -35,7 +39,7 @@
                                             <i class="icon-lock"></i>
                                         </span>
                                         <input type="password" class="form-control" name="password" id="password"
-                                            placeholder="Password"" />
+                                            placeholder="Password" />
                                     </div>
                                 </div>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tuser;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -10,7 +11,7 @@ class TuserController extends Controller
 {
     function tampil()
     {
-        $user = Tuser::get();
+        $user = User::get();
         return view('manajemen-user.tampil', compact('user'));
     }
 
@@ -38,7 +39,7 @@ class TuserController extends Controller
             'level.required'        => 'Level Wajib Diisi!'
         ]);
 
-        $user = new Tuser();
+        $user = new User();
         $user->username             = $request->username;
         $user->password             = $request->password;
         $user->nama_lengkap         = $request->nama_lengkap;
@@ -51,13 +52,13 @@ class TuserController extends Controller
 
     function edit($id)
     {
-        $user = Tuser::find($id);
+        $user = User::find($id);
         return view('manajemen-user.edit', compact('user'));
     }
 
     function exedit(Request $request, $id)
     {
-        $user = Tuser::find($id);
+        $user = User::find($id);
         $user->username             = $request->username;
         $user->password             = $request->password;
         $user->nama_lengkap         = $request->nama_lengkap;
@@ -70,7 +71,7 @@ class TuserController extends Controller
 
     function hapus($id)
     {
-        $user = Tuser::find($id);
+        $user = User::find($id);
         $user->delete();
 
         return redirect()->route('manajemen-user.tampil');
