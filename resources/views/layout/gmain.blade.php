@@ -5,3 +5,4 @@
 @include('layout.content')
     
 @include('layout.gfooter')
+

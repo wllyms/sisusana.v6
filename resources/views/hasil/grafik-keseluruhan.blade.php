@@ -11,7 +11,7 @@
                 <a href="/hasil/grafik-keseluruhan" class="btn btn-outline-secondary me-2">
                     Grafik Keseluruhan</a>
                 <a href="/hasil/persentase-pertanyaan" class="btn btn-outline-secondary me-2">
-                    Persentase Pertanyaan</a>
+                    Grafik per Pertanyaan</a>
                 <a href="/hasil/laporan" class="btn btn-outline-secondary me-2">
                     Laporan</a>
                 </form>
@@ -30,7 +30,7 @@
               </div>
               <div>
                 <div class="card-header">
-                  <h5>Jumlah Responden : {{ $totRespon }} orang</h5>
+                  <h5>Jumlah Responden : {{ $totRespon }} Responden</h5>
                 </div>
                 <div class="card-body">
                   <table class="table">

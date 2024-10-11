@@ -109,7 +109,7 @@
 
       Swal.fire({
         title: "Peringatan",
-        text: "Apakah kamu yakin akan menghapus data ini?",
+        text: "Apakah kamu yakin akan menghapus data ini? Mungkin akan berpengaruh pada grafik dan nilai!",
         icon: "warning",
         showCancelButton: true,
         confirmButtonColor: "#4CAF50",

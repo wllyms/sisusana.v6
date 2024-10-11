@@ -9,7 +9,7 @@
     />
     <link
       rel="icon"
-      href="../assets/img/kaiadmin/favicon.ico"
+      href="{{asset('assets')}}/img/logo-rs.png"
       type="image/x-icon"
     />
 
@@ -40,6 +40,9 @@
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link rel="stylesheet" href="../assets/css/demo.css" />
+
+    
+
   </head>
   <body>
     <div class="wrapper">

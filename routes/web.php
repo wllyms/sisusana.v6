@@ -8,6 +8,7 @@ use App\Http\Controllers\TuserController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\JawabanController;
 use App\Http\Controllers\PertanyaanController;
+use App\Models\Jawaban;
 
 Route::get('/manajemen-pertanyaan', function () {
     return view('manajemen-pertanyaan.tampil');
@@ -27,17 +28,17 @@ Route::get('/adminlogin', function () {
 
 
 // ====== Login ======
-Route::middleware('guest')->group(function () {
-    Route::get('/adminlogin', [SesiController::class, 'index']);
-    Route::post('/adminlogin', [SesiController::class, 'login']);
-});
+// Route::middleware('guest')->group(function () {
+//     Route::get('/adminlogin', [SesiController::class, 'index']);
+//     Route::post('/adminlogin', [SesiController::class, 'login']);
+// });
 
-Route::get('/login-admin', function () {
-    return view('login-admin');
-});
+// Route::get('/login-admin', function () {
+//     return view('login-admin');
+// });
 
-Route::get('/logout', [SesiController::class, 'logout']);
-Route::get('/admin', [JawabanController::class, 'index']);
+// Route::get('/logout', [SesiController::class, 'logout']);
+// Route::get('/admin', [JawabanController::class, 'index']);
 
 
 // ====== BERANDA ======
@@ -74,5 +75,18 @@ Route::post('/survey/submit', [SurveyController::class, 'submit'])->name('survey
 
 // ====== Hasil ======
 Route::get('/hasil/grafik-keseluruhan', [JawabanController::class, 'tampilgrafikkeseluruhan'])->name('hasil.tampilgrafikkeseluruhan');
-Route::get('/hasil/persentase-pertanyaan', [JawabanController::class, 'tampilpersenpertanyaan'])->name('hasil.tampilpersenkeseluruhan');
-Route::get('/hasil/laporan', [JawabanController::class, 'tampillaporan'])->name('hasil.laporan');
+Route::get('/hasil/persentase-pertanyaan', [JawabanController::class, 'tampilpersenpertanyaan'])->name('hasil.tampilgrafikpertanyaan');
+Route::get('/hasil/laporan', [JawabanController::class, 'tampillaporan'])->name('hasil.tampillaporan');
+Route::get('/detaillaporan/{id}', [JawabanController::class, 'detaillaporan'])->name('survey.detail');
+Route::get('/cetakdetail/{id}', [JawabanController::class, 'cetakdetail'])->name('survey.cetakdetail');
+Route::post('/hapuslaporan/{id}', [JawabanController::class, 'hapuslaporan'])->name('survey.hapus');
+
+
+Route::get('/rekapkritik', [JawabanController::class, 'detailrekapkritik'])->name('rekap.kritik');
+Route::get('/pdf-rekapkritik', [JawabanController::class, 'exportKritikPDF'])->name('export.kritik-pdf');
+Route::get('/excel-rekapkritik', [JawabanController::class, 'exportKritikExcel'])->name('export.kritik-excel');
+
+Route::get('/rekapsurvey', [JawabanController::class, 'detailrekapsemua'])->name('rekap.detail');
+Route::get('/pdf-rekapsurvey', [JawabanController::class, 'exportSurveyPDF'])->name('export.survey-pdf');
+Route::get('/excel-rekapsurvey', [JawabanController::class, 'exportSurveyExcel'])->name('export.survey-excel');
+

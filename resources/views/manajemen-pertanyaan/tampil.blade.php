@@ -16,6 +16,10 @@
                 <div class="card">
                     <div class="card-header">
                         <h4 class="card-title">Pertanyaan</h4>
+                        <blockquote class="blockquote-reverse p-0">
+                            <i style="margin-left: 630px"><font size="1">*Menambah pertanyaan saat data survey sudah ter isi memungkinkan penurunan nilai IKM dan nilai-nilai lainnya</font>	</i>
+                        </blockquote>
+     
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -42,7 +46,7 @@
                                                     </a>
                                                     <form action="{{ route('manajemen-pertanyaan.hapus', $data->id) }}"
                                                         method="post">
-                                                        @csrf
+                                                        @csrf 
                                                         <button class="btn btn-danger btn-sm ms-1" id="hapus">
                                                             <i class="fas fa-trash"></i> Hapus
                                                         </button>

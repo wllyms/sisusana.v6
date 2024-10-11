@@ -74,129 +74,130 @@
 
 {{-- sweetalert tambah dan edit --}}
 <script type="text/javascript">
-$(function() {
-    // Konfirmasi sebelum menyimpan
-    $(document).on('click', '#tambah', function(e) {
-        e.preventDefault();
-        var form = $('#form-tambah-grup');
+  $(function() {
+      // Konfirmasi sebelum menyimpan
+      $(document).on('click', '#tambah', function(e) {
+          e.preventDefault();
+          var form = $('#form-tambah-grup');
 
-        Swal.fire({
-            title: "Konfirmasi",
-            text: "Apakah kamu yakin ingin menyimpan data ini?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Ya, simpan",
-            cancelButtonText: "Tidak"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Submit form secara manual
-                form.submit();
-            }
-        });
-    });
-});
+          Swal.fire({
+              title: "Konfirmasi",
+              text: "Apakah kamu yakin ingin menyimpan data ini?",
+              icon: "question",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Ya, simpan",
+              cancelButtonText: "Tidak"
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  // Submit form secara manual
+                  form.submit();
+              }
+          });
+      });
+  });
 </script>
 
 
 {{-- sweetalert hapus --}}
 <script type="text/javascript">
-$(function(){
-  // Tombol Hapus
-  $(document).on('click', '#hapus', function(e){
-    e.preventDefault();
-    var form = $(this).closest("form");
+  $(function(){
+    // Tombol Hapus
+    $(document).on('click', '#hapus', function(e){
+      e.preventDefault();
+      var form = $(this).closest("form");
 
-    Swal.fire({
-      title: "Peringatan",
-      text: "Apakah kamu yakin akan menghapus data ini?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#4CAF50",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, hapus",
-      cancelButtonText: "Tidak"
-    }).then((result) => {
-      if (result.isConfirmed) {
-        form.submit();
-        Swal.fire({
-          title: "Terhapus!",
-          text: "Data berhasil dihapus.",
-          icon: "success"
-        });
-        
-      }
+      Swal.fire({
+        title: "Peringatan",
+        text: "Apakah kamu yakin akan menghapus data ini? Mungkin akan berpengaruh pada grafik dan nilai! ",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#4CAF50",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Ya, hapus",
+        cancelButtonText: "Tidak"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit();
+          Swal.fire({
+            title: "Terhapus!",
+            text: "Data berhasil dihapus.",
+            icon: "success"
+          });
+          
+        }
+      });
     });
-  });
 
-});
+  });
 </script>
 
 
 
 {{-- datatable start --}}
-<script>
-$(document).ready(function () {
-  $("#basic-datatables").DataTable({});
+  <script>
+    $(document).ready(function () {
+      $("#basic-datatables").DataTable({});
 
-  $("#multi-filter-select").DataTable({
-    pageLength: 5,
-    initComplete: function () {
-      this.api()
-        .columns()
-        .every(function () {
-          var column = this;
-          var select = $(
-            '<select class="form-select"><option value=""></option></select>'
-          )
-            .appendTo($(column.footer()).empty())
-            .on("change", function () {
-              var val = $.fn.dataTable.util.escapeRegex($(this).val());
+      $("#multi-filter-select").DataTable({
+        pageLength: 5,
+        initComplete: function () {
+          this.api()
+            .columns()
+            .every(function () {
+              var column = this;
+              var select = $(
+                '<select class="form-select"><option value=""></option></select>'
+              )
+                .appendTo($(column.footer()).empty())
+                .on("change", function () {
+                  var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                  column
+                    .search(val ? "^" + val + "$" : "", true, false)
+                    .draw();
+                });
 
               column
-                .search(val ? "^" + val + "$" : "", true, false)
-                .draw();
+                .data()
+                .unique()
+                .sort()
+                .each(function (d, j) {
+                  select.append(
+                    '<option value="' + d + '">' + d + "</option>"
+                  );
+                });
             });
+        },
+      });
 
-          column
-            .data()
-            .unique()
-            .sort()
-            .each(function (d, j) {
-              select.append(
-                '<option value="' + d + '">' + d + "</option>"
-              );
-            });
-        });
-    },
-  });
+      // Add Row
+      $("#add-row").DataTable({
+        pageLength: 5,
+      });
 
-  // Add Row
-  $("#add-row").DataTable({
-    pageLength: 5,
-  });
+      var action =
+        '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
 
-  var action =
-    '<td> <div class="form-button-action"> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task"> <i class="fa fa-edit"></i> </button> <button type="button" data-bs-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove"> <i class="fa fa-times"></i> </button> </div> </td>';
-
-  $("#addRowButton").click(function () {
-    $("#add-row")
-      .dataTable()
-      .fnAddData([
-        $("#addName").val(),
-        $("#addPosition").val(),
-        $("#addOffice").val(),
-        action,
-      ]);
-    $("#addRowModal").modal("hide");
-  });
-});
-</script>
+      $("#addRowButton").click(function () {
+        $("#add-row")
+          .dataTable()
+          .fnAddData([
+            $("#addName").val(),
+            $("#addPosition").val(),
+            $("#addOffice").val(),
+            action,
+          ]);
+        $("#addRowModal").modal("hide");
+      });
+    });
+  </script>
 {{-- datatable end --}}
 
-    {{-- grafik start --}}
-    <script>
+{{-- grafik keseluruhan --}}
+@if(Route::is('hasil.tampilgrafikkeseluruhan','beranda.tampiljawaban'))
+  <script>
         var totSurvei = document.getElementById("totSurvei").getContext("2d");
     
         var myTotSurvei = new Chart(totSurvei, {
@@ -234,8 +235,56 @@ $(document).ready(function () {
             },
         },
         });
-    </script>
-    {{-- grafik end --}}
+  </script>
+@endif
+{{-- grafik end --}}
+
+{{-- grafik per pertanyaan start--}}
+@if(Route::is('hasil.tampilgrafikpertanyaan'))
+  @foreach ($dataPersentase as $data)
+  <script>
+    var totSurvei = document.getElementById('totSurvei{{ $data['pertanyaan']->id }}').getContext("2d");
+
+    var myTotSurvei = new Chart(totSurvei, {
+    type: "pie",
+    data: {
+        datasets: [
+        {
+            data: [{{ $data['jumlahA'] }}, {{ $data['jumlahB'] }}, {{ $data['jumlahC'] }}, {{ $data['jumlahD'] }}],
+            backgroundColor: ["#1572e8","#48abf7", "#ffad46", "#f25961"],
+            borderWidth: 0,
+        },
+        ],
+        labels: ["Sangat Baik","Baik", "Cukup", "Buruk"],
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+        position: "bottom",
+        labels: {
+            fontColor: "rgb(154, 154, 154)",
+            fontSize: 11,
+            usePointStyle: true,
+            padding: 20,
+        },
+        },
+        tooltips: false,
+        layout: {
+        padding: {
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: 20,
+        },
+        },
+    },
+    });
+  </script>
+  @endforeach
+@endif
+{{-- grafik per pertanyaan end--}}
+
 
 </body>
 </html>

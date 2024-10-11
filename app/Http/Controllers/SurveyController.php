@@ -46,9 +46,10 @@ class SurveyController extends Controller
     $survey->pendidikan = $request->pendidikan;
     $survey->pekerjaan = $request->pekerjaan;
     $survey->jlayanan = $request->jlayanan;
+    $survey->tanggal = $request->tanggal;
 
     // Set tanggal ke waktu saat ini
-    $survey->tanggal = Carbon::createFromFormat('d-m-Y', $request->tanggal)->format('Y-m-d');
+    // $survey->tanggal = Carbon::createFromFormat('d-m-Y', $request->tanggal)->format('Y-m-d');
     
     $survey->kritik = $request->kritik;
     $survey->save();

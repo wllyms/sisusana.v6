@@ -107,7 +107,7 @@
       <div class="col-xl-12">
         <div class="card">
           <div class="card-header">
-            <div class="card-title">Total Survei</div>
+            <div class="card-title">Grafik Total Survei</div>
           </div>
           <div class="card-body">
             <div class="chart-container">

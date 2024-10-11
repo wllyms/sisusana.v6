@@ -31,7 +31,7 @@
                     <h4 class="text-section">MENU</h4>
                 </li>
                 <li class="nav-item">
-                    <a href="/admin">
+                    <a href="/beranda">
                         <i class="fas fa-home"></i>
                         <p>Beranda</p>
                     </a>
@@ -72,7 +72,7 @@
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="dark">
                 <a href="../index.html" class="logo">
-                    <img src="../assets/img/kaiadmin/logo_light.svg" alt="navbar brand" class="navbar-brand" />
+                    <img src="" alt="navbar brand" class="navbar-brand" />
                 </a>
                 <div class="nav-toggle">
                     <button class="btn btn-toggle toggle-sidebar">
