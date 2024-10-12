@@ -289,54 +289,161 @@ class JawabanController extends Controller
     {
         $survey = Survey::with('jawaban')->get();
         $pertanyaan = Pertanyaan::get();
-    
-        $nrrPerResponden = [];
-    
-        foreach ($survey as $data) {
-            $totalNilai = 0;
-            $jumlahJawaban = 0;
-    
-            foreach ($data->jawaban as $jawaban) {
-                switch ($jawaban->jawaban) {
-                    case 'A':
-                        $totalNilai += 4;
-                        break;
-                    case 'B':
-                        $totalNilai += 3;
-                        break;
-                    case 'C':
-                        $totalNilai += 2;
-                        break;
-                    case 'D':
-                        $totalNilai += 1;
-                        break;
-                }
-                $jumlahJawaban++;
-            }
-    
+
+        $nrrPerResponden = $survey->map(function ($data) {
+            $totalNilai = $data->jawaban->sum(function ($jawaban) {
+                return match ($jawaban->jawaban) {
+                    'A' => 4,
+                    'B' => 3,
+                    'C' => 2,
+                    'D' => 1,
+                    default => 0,
+                };
+            });
+            $jumlahJawaban = $data->jawaban->count();
+        
             $nrr = $jumlahJawaban > 0 ? ($totalNilai / $jumlahJawaban) * 25 : 0; 
-            $nrrPerResponden[] = [
+            return [
                 'responden_id' => $data->id, 
                 'nrr' => $nrr,
                 'layanan' => $data->jlayanan, 
                 'usia' => $data->usia, 
                 'kritik' => $data->kritik, 
             ];
-        }
-    
-        $mpdf = new Mpdf();
+        })->toArray();
         
-        $html = view('hasil.cetak-rekap-kritik', compact('nrrPerResponden', 'pertanyaan'))->render();
-    
-        $mpdf->WriteHTML($html);
 
-        $tanggal = date('d-m-Y');
-        $namaFile = $tanggal .'_Laporan_Rekap_Kritik' . '.pdf';
+        return view('hasil.cetak-rekap-kritik', compact('nrrPerResponden', 'pertanyaan'));
+    }
+    // public function exportKritikPDF()
+    // {
+    //     $survey = Survey::with('jawaban')->get();
+    //     $pertanyaan = Pertanyaan::get();
     
-        $mpdf->Output($namaFile, 'D');
+    //     $nrrPerResponden = [];
+    
+    //     foreach ($survey as $data) {
+    //         $totalNilai = 0;
+    //         $jumlahJawaban = 0;
+    
+    //         foreach ($data->jawaban as $jawaban) {
+    //             switch ($jawaban->jawaban) {
+    //                 case 'A':
+    //                     $totalNilai += 4;
+    //                     break;
+    //                 case 'B':
+    //                     $totalNilai += 3;
+    //                     break;
+    //                 case 'C':
+    //                     $totalNilai += 2;
+    //                     break;
+    //                 case 'D':
+    //                     $totalNilai += 1;
+    //                     break;
+    //             }
+    //             $jumlahJawaban++;
+    //         }
+    
+    //         $nrr = $jumlahJawaban > 0 ? ($totalNilai / $jumlahJawaban) * 25 : 0; 
+    //         $nrrPerResponden[] = [
+    //             'responden_id' => $data->id, 
+    //             'nrr' => $nrr,
+    //             'layanan' => $data->jlayanan, 
+    //             'usia' => $data->usia, 
+    //             'kritik' => $data->kritik, 
+    //         ];
+    //     }
+    
+    //     $mpdf = new Mpdf();
+        
+    //     $html = view('hasil.cetak-rekap-kritik', compact('nrrPerResponden', 'pertanyaan'))->render();
+    
+    //     $mpdf->WriteHTML($html);
+
+    //     $tanggal = date('d-m-Y');
+    //     $namaFile = $tanggal .'_Laporan_Rekap_Kritik' . '.pdf';
+    
+    //     $mpdf->Output($namaFile, 'D');
+    // }
+
+    // public function exportSurveyPDF()
+    // {
+    //     $survey = Survey::with('jawaban')->get();
+    //     $pertanyaan = Pertanyaan::get();
+    //     $totalResponden = Survey::count();
+
+    //     $totalNilaiPerPertanyaan = [];
+
+    //     $totalPertanyaan = $pertanyaan->count();
+
+    //     $totalNilaiPerPertanyaan = [];
+    //     $NRRPerPertanyaan = [];
+    //     $NRRTertimbangPerPertanyaan = [];
+    //     $IKMPerPertanyaan = [];
+
+    //     $survey->each(function ($surv) use (&$totalNilaiPerPertanyaan) {
+    //         $surv->jawaban->each(function ($jawab) use (&$totalNilaiPerPertanyaan) {
+    //             switch ($jawab->jawaban) {
+    //                 case 'A':
+    //                     $jawab->jawaban = 4;
+    //                     break;
+    //                 case 'B':
+    //                     $jawab->jawaban = 3;
+    //                     break;
+    //                 case 'C':
+    //                     $jawab->jawaban = 2;
+    //                     break;
+    //                 case 'D':
+    //                     $jawab->jawaban = 1;
+    //                     break;
+    //                 default:
+    //                     $jawab->jawaban = 0;
+    //             }
+
+    //             $pertanyaanId = $jawab->pertanyaan_id; 
+    //             if (!isset($totalNilaiPerPertanyaan[$pertanyaanId])) {
+    //                 $totalNilaiPerPertanyaan[$pertanyaanId] = 0;
+    //             }
+    //             $totalNilaiPerPertanyaan[$pertanyaanId] += $jawab->jawaban;
+    //         });
+    //     });
+
+    //     foreach ($totalNilaiPerPertanyaan as $pertanyaanId => $totalNilai) {
+    //         $NRRPerPertanyaan[$pertanyaanId] = ($totalResponden > 0) ? $totalNilai / $totalResponden : 0;
+    //     }
+
+    //     foreach ($NRRPerPertanyaan as $pertanyaanId => $NRR) {
+    //         $NRRTertimbangPerPertanyaan[$pertanyaanId] = $NRR * (1 / $totalPertanyaan);
+    //         $totalNRRTertimbang = array_sum($NRRTertimbangPerPertanyaan);
+    //     }   
+
+    //     foreach ($NRRTertimbangPerPertanyaan as $pertanyaanId => $NRRTertimbang) {
+    //         $IKMPerPertanyaan[$pertanyaanId] = $NRRTertimbang * 25;
+    //     }
+
+
+    //      // Inisialisasi mPDF
+    //      $mpdf = new Mpdf();
+        
+    //      $html = view('hasil.cetak-rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan','NRRTertimbangPerPertanyaan','IKMPerPertanyaan','totalNRRTertimbang'))->render();
+     
+    //      $mpdf->WriteHTML($html);
+ 
+    //      $tanggal = date('d-m-Y'); 
+    //      $namaFile = $tanggal .'_Laporan_Rekap_Kuisioner' . '.pdf';
+     
+    //      $mpdf->Output($namaFile, 'D'); 
+    // }
+
+    public function exportSurveyExcel()
+    {
+        $tanggalWaktu = Carbon::now()->locale('id')->translatedFormat('d-m-Y');
+        $fileName = $tanggalWaktu . '_Laporan_Rekap_Kuisioner.xlsx'; 
+
+        return Excel::download(new SurveyExport, $fileName);
     }
 
-    public function exportSurveyPDF()
+    function exportSurveyPDF()
     {
         $survey = Survey::with('jawaban')->get();
         $pertanyaan = Pertanyaan::get();
@@ -392,25 +499,7 @@ class JawabanController extends Controller
         }
 
 
-         // Inisialisasi mPDF
-         $mpdf = new Mpdf();
-        
-         $html = view('hasil.cetak-rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan','NRRTertimbangPerPertanyaan','IKMPerPertanyaan','totalNRRTertimbang'))->render();
-     
-         $mpdf->WriteHTML($html);
- 
-         $tanggal = date('d-m-Y'); 
-         $namaFile = $tanggal .'_Laporan_Rekap_Kuisioner' . '.pdf';
-     
-         $mpdf->Output($namaFile, 'D'); 
-    }
-
-    public function exportSurveyExcel()  //
-    {
-        $tanggalWaktu = Carbon::now()->locale('id')->translatedFormat('d-m-Y');
-        $fileName = $tanggalWaktu . '_Laporan_Rekap_Kuisioner.xlsx'; 
-
-        return Excel::download(new SurveyExport, $fileName);
+        return view('hasil.cetak-rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan','NRRTertimbangPerPertanyaan','IKMPerPertanyaan','totalNRRTertimbang'));
     }
 
     function hapuslaporan($id)

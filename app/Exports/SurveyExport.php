@@ -75,29 +75,35 @@ class SurveyExport implements FromView, WithStyles, WithHeadings
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:F1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A1:L1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:L1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-        $sheet->getStyle('A1:F1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
-        $sheet->getStyle('A1:F1')->getFill()->getStartColor()->setARGB('ADD8E6'); // Warna biru muda
+        $sheet->getStyle('A1:L1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+        $sheet->getStyle('A1:L1')->getFill()->getStartColor()->setARGB('ADD8E6'); // Warna biru muda
 
-        $sheet->getStyle('A1:F1')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A1:L1')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
         $sheet->getColumnDimension('A')->setWidth(16);
         $sheet->getColumnDimension('B')->setWidth(30);
-        $sheet->getColumnDimension('C')->setWidth(15);
-        $sheet->getColumnDimension('D')->setWidth(15);
-        $sheet->getColumnDimension('E')->setWidth(20);
-        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(10);
+        $sheet->getColumnDimension('D')->setWidth(10);
+        $sheet->getColumnDimension('E')->setWidth(10);
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(10);
+        $sheet->getColumnDimension('H')->setWidth(10);
+        $sheet->getColumnDimension('I')->setWidth(10);
+        $sheet->getColumnDimension('J')->setWidth(10);
+        $sheet->getColumnDimension('K')->setWidth(10);
+        $sheet->getColumnDimension('L')->setWidth(10);
 
-        $sheet->getStyle('A2:F' . $sheet->getHighestRow())->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('A2:L' . $sheet->getHighestRow())->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
-        $sheet->getStyle('A1:F' . $sheet->getHighestRow())->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $sheet->getStyle('A1:L' . $sheet->getHighestRow())->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
-        $sheet->getStyle('A' . ($sheet->getHighestRow() - 3) . ':F' . ($sheet->getHighestRow() - 3))->getFont()->setBold(true);
-        $sheet->getStyle('A' . ($sheet->getHighestRow() - 2) . ':F' . ($sheet->getHighestRow() - 2))->getFont()->setBold(true);
-        $sheet->getStyle('A' . ($sheet->getHighestRow() - 1) . ':F' . ($sheet->getHighestRow() - 1))->getFont()->setBold(true);
-        $sheet->getStyle('A' . $sheet->getHighestRow() . ':F' . $sheet->getHighestRow())->getFont()->setBold(true);
+        $sheet->getStyle('A' . ($sheet->getHighestRow() - 3) . ':L' . ($sheet->getHighestRow() - 3))->getFont()->setBold(true);
+        $sheet->getStyle('A' . ($sheet->getHighestRow() - 2) . ':L' . ($sheet->getHighestRow() - 2))->getFont()->setBold(true);
+        $sheet->getStyle('A' . ($sheet->getHighestRow() - 1) . ':L' . ($sheet->getHighestRow() - 1))->getFont()->setBold(true);
+        $sheet->getStyle('A' . $sheet->getHighestRow() . ':L' . $sheet->getHighestRow())->getFont()->setBold(true);
     }
 }
 

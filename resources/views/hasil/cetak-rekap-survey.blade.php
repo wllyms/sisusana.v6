@@ -47,6 +47,14 @@
                 display: none;
             }
         }
+
+        body {
+        font-size: 7px; /* Mengecilkan ukuran font */
+            }
+            .table {
+                width: 100%;
+                font-size: 6px; /* Mengecilkan ukuran tabel */
+            }
         .table-bordered {
             border: 1px solid black !important; /* Atur ketebalan dan warna dengan !important */
         }
@@ -57,7 +65,6 @@
     </style>
     <script>
         window.onload = function() {
-            window.location.href = "{{ route('export.survey-pdf') }}";
         };
     </script>
 
@@ -66,8 +73,10 @@
 <body>
     <div class="container mt-4">
         <br>
-        <h1 class="text-center">SISUSANA</h1>
-        <h2 class="text-center">Laporan Rekap Semua Kuisioner</h2>
+        <h3 class="text-center"><b>SISUSANA</b></h3>
+        <h4 class="text-center"><b>Laporan Rekap Semua Kuisioner</b></h4>
+        <br>
+        <br>
         <br>
         <table class="table table-bordered mt-4">
             <thead>
@@ -113,14 +122,35 @@
                 </tr>
         
                 <tr class="bg-info">
-                    <td colspan='5'>IKM Unit Pelayanan</td>
+                    <td colspan='11'>IKM Unit Pelayanan</td>
                     <td>{{ number_format(array_sum($IKMPerPertanyaan), 1) }}</td>
                 </tr>
             </tbody>
         </table>
     </div>
-
-    
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script>
+    window.onload = function() {
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = String(now.getMonth() + 1).padStart(2, '0');
+        var day = String(now.getDate()).padStart(2, '0');
+
+        var timestamp = year + '_' + month + '_' + day + '_';
+
+        var element = document.body;
+
+        var opt = {
+            margin:       0.5,
+            filename:     timestamp + '_laporan-rekap-semua-kuisioner.pdf', 
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2.5 },
+            jsPDF:        { unit: 'in', format: 'tabloid', orientation: 'landscape' }
+        };
+
+        html2pdf().from(element).set(opt).save();
+    };
+</script>
 
 </html>

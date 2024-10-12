@@ -42,7 +42,7 @@
         </tr>
 
         <tr>
-            <td colspan='5'>IKM Unit Pelayanan</td>
+            <td colspan='11'>IKM Unit Pelayanan</td>
             <td>{{ number_format(array_sum($IKMPerPertanyaan), 1) }}</td>
         </tr>
     </tbody>

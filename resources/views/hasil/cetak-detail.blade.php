@@ -58,7 +58,6 @@
     <script>
         // Otomatis memanggil print ketika halaman dimuat
         window.onload = function() {
-            window.print();
         };
     </script>
 
@@ -67,22 +66,23 @@
 <body>
     <div class="container mt-4">
         <br>
-        <h2 class="text-center">Laporan Detail Survei</h2>
+        <h3 class="text-center"><b>SISUSANA</b></h3>
+        <h4 class="text-center"><b>Laporan Detail Survei</b></h4>
         <br>
-        <p>Dicetak : <b>{{ $tanggalWaktu }}</b></p>
         <br>
-        <p>Usia: {{ $survey->usia }}</p>
-        <p>Jenis Pasien: {{ $survey->jpasien }}</p>
-        <p>Jenis Kelamin: {{ $survey->jkelamin }}</p>
-        <p>Pendidikan: {{ $survey->pendidikan }}</p>
-        <p>Pekerjaan: {{ $survey->pekerjaan }}</p>
-        <p>Jenis Layanan: {{ $survey->jlayanan }}</p>
-        <p>Tanggal Survey: {{ $survey->tanggal }}</p>
-        <p>Kritik: {{ $survey->kritik }}</p>
+        <br>
+        <p>Usia: <b>{{ $survey->usia }}</b></p>
+        <p>Jenis Pasien: <b>{{ $survey->jpasien }}</b></p>
+        <p>Jenis Kelamin: <b>{{ $survey->jkelamin }}</b></p>
+        <p>Pendidikan: <b>{{ $survey->pendidikan }}</b></p>
+        <p>Pekerjaan: <b>{{ $survey->pekerjaan }}</b></p>
+        <p>Jenis Layanan: <b>{{ $survey->jlayanan }}</b></p>
+        <p>Tanggal Survey: <b>{{ $survey->tanggal }}</b></p>
+        <p>Kritik: <b>{{ $survey->kritik }}</b></p>
         <br><br>
         <table class="table table-bordered">
             <thead>
-                <tr class="text-center">
+                <tr class="text-center bg-info">
                     <th scope="col">No</th>
                     <th scope="col">Pertanyaan</th>
                     <th scope="col">Sangat Baik</th>
@@ -106,5 +106,34 @@
         </table>
     </div>
 </body>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script>
+    window.onload = function() {
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = String(now.getMonth() + 1).padStart(2, '0');
+        var day = String(now.getDate()).padStart(2, '0');
+
+        var timestamp = year + '_' + month + '_' + day + '_';
+
+        var element = document.body;
+
+        var opt = {
+            margin:       0.5,
+            filename:     timestamp + '_laporan-detail-survei.pdf', 
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().from(element).set(opt).save();
+    };
+</script>
+
+
+
+
 
 </html>

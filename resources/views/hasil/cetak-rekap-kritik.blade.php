@@ -57,7 +57,6 @@
     </style>
     <script>
         window.onload = function() {
-            window.location.href = "{{ route('export.kritik-pdf') }}";
         };
     </script>
 
@@ -66,8 +65,10 @@
 <body>
     <div class="container mt-4">
         <br>
-        <h1 class="text-center">SISUSANA</h1>
-        <h2 class="text-center">Laporan Rekap Semua Kritik dan Saran</h2>
+        <h3 class="text-center"><b>SISUSANA</b></h3>
+        <h4 class="text-center"><b>Laporan Rekap Kritik dan Saran</b></h4>
+        <br>
+        <br>
         <br>
         <table class="table table-bordered mt-4" >
             <tr class="text-center bg-info">
@@ -95,5 +96,28 @@
 
     
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+<script>
+    window.onload = function() {
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = String(now.getMonth() + 1).padStart(2, '0');
+        var day = String(now.getDate()).padStart(2, '0');
+
+        var timestamp = year + '_' + month + '_' + day + '_';
+
+        var element = document.body;
+
+        var opt = {
+            margin:       0.5,
+            filename:     timestamp + '_laporan-rekap-kritik.pdf', 
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().from(element).set(opt).save();
+    };
+</script>
 
 </html>
