@@ -3,12 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GrupController;
 use App\Http\Controllers\SesiController;
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TuserController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\JawabanController;
 use App\Http\Controllers\PertanyaanController;
 use App\Models\Jawaban;
+use FontLib\Table\Type\name;
 
 Route::get('/manajemen-pertanyaan', function () {
     return view('manajemen-pertanyaan.tampil');
@@ -28,37 +28,40 @@ Route::get('/adminlogin', function () {
 
 
 // ====== Login ======
-// Route::middleware('guest')->group(function () {
-//     Route::get('/adminlogin', [SesiController::class, 'index']);
-//     Route::post('/adminlogin', [SesiController::class, 'login']);
-// });
+Route::get('/login', [SesiController::class, 'tampilLogin'])->name('login');
+Route::post('/login/submit', [SesiController::class, 'submitLogin'])->name('login.submit');
+Route::get('/admin', [SesiController::class, 'menu']);
 
-// Route::get('/login-admin', function () {
-//     return view('login-admin');
-// });
-
-// Route::get('/logout', [SesiController::class, 'logout']);
-// Route::get('/admin', [JawabanController::class, 'index']);
+// ====== Autentikasi / Logout ====== 
+Route::middleware('auth')->group(function () {
+    Route::get('/logout', [SesiController::class, 'logout'])->name('logout');
+});
 
 
 // ====== BERANDA ======
 Route::get('/beranda', [JawabanController::class, 'tampiljawaban'])->name('beranda.tampiljawaban');
 
 // ====== Manajemen User ======
-Route::get('/manajemen-user', [TuserController::class, 'tampil'])->name('manajemen-user.tampil');
-Route::get('/manajemen-user/tambah', [TuserController::class, 'tambah'])->name('manajemen-user.tambah');
-Route::post('/manajemen-user/submit', [TuserController::class, 'submit'])->name('manajemen-user.submit');
-Route::get('/edit-user/{id}', [TuserController::class, 'edit'])->name('manajemen-user.edit');
-Route::post('/exedit-user/{id}', [TuserController::class, 'exedit'])->name('manajemen-user.exedit');
-Route::post('/hapus-user/{id}', [TuserController::class, 'hapus'])->name('manajemen-user.hapus');
+Route::get('/manajemen-user', [TuserController::class, 'tampil'])
+    ->name('manajemen-user.tampil')->middleware('admin');
+Route::get('/manajemen-user/tambah', [TuserController::class, 'tambah'])
+    ->name('manajemen-user.tambah')->middleware('admin');
+Route::post('/manajemen-user/submit', [TuserController::class, 'submit'])
+    ->name('manajemen-user.submit')->middleware('admin');
+Route::get('/edit-user/{id}', [TuserController::class, 'edit'])
+    ->name('manajemen-user.edit')->middleware('admin');
+Route::post('/exedit-user/{id}', [TuserController::class, 'exedit'])
+    ->name('manajemen-user.exedit')->middleware('admin');
+Route::post('/hapus-user/{id}', [TuserController::class, 'hapus'])
+    ->name('manajemen-user.hapus')->middleware('admin');
 
 // ====== Manajemen Grup ======
 Route::get('/manajemen-grup', [GrupController::class, 'tampil'])->name('manajemen-grup.tampil');
-Route::get('/tambah-grup/tambah', [GrupController::class, 'tambah'])->name('manajemen-grup.tambah');
-Route::post('/manajemen-grup/submit', [GrupController::class, 'submit'])->name('manajemen-grup.submit');
-Route::get('/edit-grup/{id}', [GrupController::class, 'edit'])->name('manajemen-grup.edit');
-Route::post('/exedit-grup/{id}', [GrupController::class, 'exedit'])->name('manajemen-grup.exedit');
-Route::post('/hapus-grup/{id}', [GrupController::class, 'hapus'])->name('manajemen-grup.hapus');
+Route::get('/tambah-grup/tambah', [GrupController::class, 'tambah'])->name('manajemen-grup.tambah')->middleware('admin');
+Route::post('/manajemen-grup/submit', [GrupController::class, 'submit'])->name('manajemen-grup.submit')->middleware('admin');
+Route::get('/edit-grup/{id}', [GrupController::class, 'edit'])->name('manajemen-grup.edit')->middleware('admin');
+Route::post('/exedit-grup/{id}', [GrupController::class, 'exedit'])->name('manajemen-grup.exedit')->middleware('admin');
+Route::post('/hapus-grup/{id}', [GrupController::class, 'hapus'])->name('manajemen-grup.hapus')->middleware('admin');
 
 // ====== Manajemen Pertanyaan ======
 Route::get('/manajemen-pertanyaan', [PertanyaanController::class, 'tampil'])->name('manajemen-pertanyaan.tampil');
@@ -73,7 +76,7 @@ Route::post('/hapus-pertanyaan/{id}', [PertanyaanController::class, 'hapus'])->n
 Route::get('/', [SurveyController::class, 'tampilpertanyaan'])->name('survey.tampil');
 Route::post('/survey/submit', [SurveyController::class, 'submit'])->name('survey.submit');
 
-// ====== Hasil ======
+// ====== Hasil ====== 
 Route::get('/hasil/grafik-keseluruhan', [JawabanController::class, 'tampilgrafikkeseluruhan'])->name('hasil.tampilgrafikkeseluruhan');
 Route::get('/hasil/persentase-pertanyaan', [JawabanController::class, 'tampilpersenpertanyaan'])->name('hasil.tampilgrafikpertanyaan');
 Route::get('/hasil/laporan', [JawabanController::class, 'tampillaporan'])->name('hasil.tampillaporan');
@@ -89,4 +92,3 @@ Route::get('/excel-rekapkritik', [JawabanController::class, 'exportKritikExcel']
 Route::get('/rekapsurvey', [JawabanController::class, 'detailrekapsemua'])->name('rekap.detail');
 Route::get('/pdf-rekapsurvey', [JawabanController::class, 'exportSurveyPDF'])->name('export.survey-pdf');
 Route::get('/excel-rekapsurvey', [JawabanController::class, 'exportSurveyExcel'])->name('export.survey-excel');
-

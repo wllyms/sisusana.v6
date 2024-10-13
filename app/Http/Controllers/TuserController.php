@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tuser;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class TuserController extends Controller
@@ -12,7 +12,11 @@ class TuserController extends Controller
     function tampil()
     {
         $user = User::get();
-        return view('manajemen-user.tampil', compact('user'));
+        if (is_null(Auth::user())) {
+            return redirect()->to('/login');
+        } else {
+            return view('manajemen-user.tampil', compact('user'));
+        }
     }
 
     function tambah()

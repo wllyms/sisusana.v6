@@ -7,37 +7,36 @@ use Illuminate\Support\Facades\Auth;
 
 class SesiController extends Controller
 {
-    function index()
+    function tampilLogin()
     {
         return view('login-admin');
     }
 
-    function login(Request $request)
+    function menu()
     {
-        $request->validate([
-            'username' => 'required',
-            'password' => 'required'
-        ], [
-            'username.required' => 'Username wajib diisi!!',
-            'password.required' => 'Password wajib diisi!!'
-        ]);
 
-        $infologin = [
-            'username' => $request->username,
-            'password' => $request->password
-        ];
+        if (is_null(Auth::user())) {
+            return redirect('/login');
+        } else {
+            return redirect('/beranda');
+        }
+    }
 
-        if (Auth::attempt($infologin)) {
+    function submitLogin(Request $request)
+    {
+        $data = $request->only('username', 'password');
+
+        if (Auth::attempt($data)) {
             return redirect('admin');
             exit();
         } else {
-            return redirect()->back()->with('Gagal', 'Usernama atau Password Anda Salah!!')->withInput();
+            return redirect()->back()->with('Gagal', 'Usernama atau Password Anda Salah!!');
         }
     }
 
     function logout()
     {
         Auth::logout();
-        return view('login-admin');
+        return redirect('/');
     }
 }

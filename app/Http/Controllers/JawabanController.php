@@ -13,12 +13,14 @@ use App\Exports\RekapKritikExport;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Routing\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
 
 class JawabanController extends Controller
 {
     // tampilan beranda
     function tampiljawaban()
     {
+        // var_dump(Auth::user());
         $jawaban = Jawaban::get();
         $survey = Survey::get();
 
@@ -28,7 +30,11 @@ class JawabanController extends Controller
         $jumlahD = Jawaban::where('jawaban', 'D')->count();
         $totRespon = Survey::count();
 
-        return view('beranda', compact('jawaban','jumlahA', 'jumlahB', 'jumlahC', 'jumlahD', 'totRespon'));
+        if (is_null(Auth::user())) {
+            return redirect('/login');
+        } else {
+            return view('beranda', compact('jawaban', 'jumlahA', 'jumlahB', 'jumlahC', 'jumlahD', 'totRespon'));
+        }
     }
 
     // tampilan grafik keseluruhan
@@ -71,7 +77,7 @@ class JawabanController extends Controller
             }
         }
 
-        return view('hasil.grafik-keseluruhan', compact('jawaban','jumlahA', 'jumlahB', 'jumlahC', 'jumlahD', 'totRespon', 'persenA', 'persenB', 'persenC', 'persenD'));
+        return view('hasil.grafik-keseluruhan', compact('jawaban', 'jumlahA', 'jumlahB', 'jumlahC', 'jumlahD', 'totRespon', 'persenA', 'persenB', 'persenC', 'persenD'));
     }
 
     //tampilan data grafik per pertanyaan
@@ -85,10 +91,10 @@ class JawabanController extends Controller
             if ($startDate && $endDate) {
                 $query->whereBetween('tjawaban.created_at', [$startDate, $endDate]);
             }
-        
+
             if ($layanan) {
                 $query->join('tsurvey', 'tjawaban.survey_id', '=', 'tsurvey.id')
-                      ->where('tsurvey.jlayanan', $layanan);
+                    ->where('tsurvey.jlayanan', $layanan);
             }
         }])->get();
 
@@ -144,9 +150,9 @@ class JawabanController extends Controller
     //tampilan laporan
     function tampillaporan(Request $request)
     {
-        $dtanggal = $request->input('dtanggal');  
-        $stanggal = $request->input('stanggal'); 
-        $layanan = $request->input('layanan');   
+        $dtanggal = $request->input('dtanggal');
+        $stanggal = $request->input('stanggal');
+        $layanan = $request->input('layanan');
 
         $query = Survey::query();
 
@@ -181,7 +187,7 @@ class JawabanController extends Controller
         $jawaban = Jawaban::where('survey_id', $id)->get();
         $tanggalWaktu = now()->locale('id')->isoFormat('D MMMM YYYY HH:mm:ss');
 
-        return view('hasil.cetak-detail', compact('survey', 'jawaban','tanggalWaktu'));
+        return view('hasil.cetak-detail', compact('survey', 'jawaban', 'tanggalWaktu'));
     }
 
     //tampilan detail rekam semua kuisioner
@@ -219,7 +225,7 @@ class JawabanController extends Controller
                         $jawab->jawaban = 0;
                 }
 
-                $pertanyaanId = $jawab->pertanyaan_id; 
+                $pertanyaanId = $jawab->pertanyaan_id;
                 if (!isset($totalNilaiPerPertanyaan[$pertanyaanId])) {
                     $totalNilaiPerPertanyaan[$pertanyaanId] = 0;
                 }
@@ -234,7 +240,7 @@ class JawabanController extends Controller
         foreach ($NRRPerPertanyaan as $pertanyaanId => $NRR) {
             $NRRTertimbangPerPertanyaan[$pertanyaanId] = $NRR * (1 / $totalPertanyaan);
             $totalNRRTertimbang = array_sum($NRRTertimbangPerPertanyaan);
-        }   
+        }
 
         foreach ($NRRTertimbangPerPertanyaan as $pertanyaanId => $NRRTertimbang) {
             $IKMPerPertanyaan[$pertanyaanId] = $NRRTertimbang * 25;
@@ -242,9 +248,9 @@ class JawabanController extends Controller
 
 
         // Mengirim data ke view
-        return view('hasil.rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan','NRRTertimbangPerPertanyaan','IKMPerPertanyaan','totalNRRTertimbang'));
+        return view('hasil.rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan', 'NRRTertimbangPerPertanyaan', 'IKMPerPertanyaan', 'totalNRRTertimbang'));
     }
-    
+
     //tampilan detail rekap semua kritik
     public function detailrekapkritik()
     {
@@ -262,17 +268,17 @@ class JawabanController extends Controller
                 };
             });
             $jumlahJawaban = $data->jawaban->count();
-        
-            $nrr = $jumlahJawaban > 0 ? ($totalNilai / $jumlahJawaban) * 25 : 0; 
+
+            $nrr = $jumlahJawaban > 0 ? ($totalNilai / $jumlahJawaban) * 25 : 0;
             return [
-                'responden_id' => $data->id, 
+                'responden_id' => $data->id,
                 'nrr' => $nrr,
-                'layanan' => $data->jlayanan, 
-                'usia' => $data->usia, 
-                'kritik' => $data->kritik, 
+                'layanan' => $data->jlayanan,
+                'usia' => $data->usia,
+                'kritik' => $data->kritik,
             ];
         })->toArray();
-        
+
 
         return view('hasil.rekap-kritik', compact('nrrPerResponden', 'pertanyaan'));
     }
@@ -280,8 +286,8 @@ class JawabanController extends Controller
     public function exportKritikExcel()
     {
         $tanggalWaktu = Carbon::now()->locale('id')->translatedFormat('d-m-Y');
-        $fileName = $tanggalWaktu . '_Laporan_Rekap_Kritik.xlsx'; 
-        
+        $fileName = $tanggalWaktu . '_Laporan_Rekap_Kritik.xlsx';
+
         return Excel::download(new RekapKritikExport, $fileName);
     }
 
@@ -301,17 +307,17 @@ class JawabanController extends Controller
                 };
             });
             $jumlahJawaban = $data->jawaban->count();
-        
-            $nrr = $jumlahJawaban > 0 ? ($totalNilai / $jumlahJawaban) * 25 : 0; 
+
+            $nrr = $jumlahJawaban > 0 ? ($totalNilai / $jumlahJawaban) * 25 : 0;
             return [
-                'responden_id' => $data->id, 
+                'responden_id' => $data->id,
                 'nrr' => $nrr,
-                'layanan' => $data->jlayanan, 
-                'usia' => $data->usia, 
-                'kritik' => $data->kritik, 
+                'layanan' => $data->jlayanan,
+                'usia' => $data->usia,
+                'kritik' => $data->kritik,
             ];
         })->toArray();
-        
+
 
         return view('hasil.cetak-rekap-kritik', compact('nrrPerResponden', 'pertanyaan'));
     }
@@ -319,13 +325,13 @@ class JawabanController extends Controller
     // {
     //     $survey = Survey::with('jawaban')->get();
     //     $pertanyaan = Pertanyaan::get();
-    
+
     //     $nrrPerResponden = [];
-    
+
     //     foreach ($survey as $data) {
     //         $totalNilai = 0;
     //         $jumlahJawaban = 0;
-    
+
     //         foreach ($data->jawaban as $jawaban) {
     //             switch ($jawaban->jawaban) {
     //                 case 'A':
@@ -343,7 +349,7 @@ class JawabanController extends Controller
     //             }
     //             $jumlahJawaban++;
     //         }
-    
+
     //         $nrr = $jumlahJawaban > 0 ? ($totalNilai / $jumlahJawaban) * 25 : 0; 
     //         $nrrPerResponden[] = [
     //             'responden_id' => $data->id, 
@@ -353,16 +359,16 @@ class JawabanController extends Controller
     //             'kritik' => $data->kritik, 
     //         ];
     //     }
-    
+
     //     $mpdf = new Mpdf();
-        
+
     //     $html = view('hasil.cetak-rekap-kritik', compact('nrrPerResponden', 'pertanyaan'))->render();
-    
+
     //     $mpdf->WriteHTML($html);
 
     //     $tanggal = date('d-m-Y');
     //     $namaFile = $tanggal .'_Laporan_Rekap_Kritik' . '.pdf';
-    
+
     //     $mpdf->Output($namaFile, 'D');
     // }
 
@@ -424,21 +430,21 @@ class JawabanController extends Controller
 
     //      // Inisialisasi mPDF
     //      $mpdf = new Mpdf();
-        
+
     //      $html = view('hasil.cetak-rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan','NRRTertimbangPerPertanyaan','IKMPerPertanyaan','totalNRRTertimbang'))->render();
-     
+
     //      $mpdf->WriteHTML($html);
- 
+
     //      $tanggal = date('d-m-Y'); 
     //      $namaFile = $tanggal .'_Laporan_Rekap_Kuisioner' . '.pdf';
-     
+
     //      $mpdf->Output($namaFile, 'D'); 
     // }
 
     public function exportSurveyExcel()
     {
         $tanggalWaktu = Carbon::now()->locale('id')->translatedFormat('d-m-Y');
-        $fileName = $tanggalWaktu . '_Laporan_Rekap_Kuisioner.xlsx'; 
+        $fileName = $tanggalWaktu . '_Laporan_Rekap_Kuisioner.xlsx';
 
         return Excel::download(new SurveyExport, $fileName);
     }
@@ -477,7 +483,7 @@ class JawabanController extends Controller
                         $jawab->jawaban = 0;
                 }
 
-                $pertanyaanId = $jawab->pertanyaan_id; 
+                $pertanyaanId = $jawab->pertanyaan_id;
                 if (!isset($totalNilaiPerPertanyaan[$pertanyaanId])) {
                     $totalNilaiPerPertanyaan[$pertanyaanId] = 0;
                 }
@@ -492,14 +498,14 @@ class JawabanController extends Controller
         foreach ($NRRPerPertanyaan as $pertanyaanId => $NRR) {
             $NRRTertimbangPerPertanyaan[$pertanyaanId] = $NRR * (1 / $totalPertanyaan);
             $totalNRRTertimbang = array_sum($NRRTertimbangPerPertanyaan);
-        }   
+        }
 
         foreach ($NRRTertimbangPerPertanyaan as $pertanyaanId => $NRRTertimbang) {
             $IKMPerPertanyaan[$pertanyaanId] = $NRRTertimbang * 25;
         }
 
 
-        return view('hasil.cetak-rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan','NRRTertimbangPerPertanyaan','IKMPerPertanyaan','totalNRRTertimbang'));
+        return view('hasil.cetak-rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan', 'NRRTertimbangPerPertanyaan', 'IKMPerPertanyaan', 'totalNRRTertimbang'));
     }
 
     function hapuslaporan($id)
@@ -512,5 +518,4 @@ class JawabanController extends Controller
 
         return redirect()->route('hasil.tampillaporan');
     }
-
 }

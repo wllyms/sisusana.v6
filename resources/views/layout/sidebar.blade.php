@@ -36,14 +36,14 @@
                         <p>Beranda</p>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="/manajemen-user">
-                        <i class="fas fa-user"></i>
-                        <p>Manajemen User</p>
-                    </a>
-                </li>
-                {{-- @if (Auth::user()->level == 'Super Admin')
-                @endif --}}
+                @if (Auth::user()->level == 'Super Admin')
+                    <li class="nav-item">
+                        <a href="/manajemen-user">
+                            <i class="fas fa-user"></i>
+                            <p>Manajemen User</p>
+                        </a>
+                    </li>
+                @endif
                 <li class="nav-item">
                     <a href="/manajemen-grup">
                         <i class="fas fa-layer-group"></i>
@@ -103,18 +103,20 @@
                             <div class="avatar-sm">
                                 <img src="../assets/img/profile.jpg" alt="..." class="avatar-img rounded-circle" />
                             </div>
-                            <span class="profile-username">
-                                <span class="fw-bold">
-                                    {{-- @if (Auth::check())
-                                        <p>{{ Auth::user()->level }}</p>
-                                    @endif --}}
-                                </span>
-                            </span>
+                            <div class="profile-username">
+                                @auth()
+                                    {{ strtoupper(Auth::user()->nama_lengkap) }}
+                                    <br>
+                                    <span class="text-primary">
+                                        {{ Auth::user()->level }}
+                                    </span>
+                                @endauth
+                            </div>
                         </a>
                         <ul class="dropdown-menu dropdown-user animated fadeIn">
                             <div class="dropdown-user-scroll scrollbar-outer">
                                 <li>
-                                    <a class="dropdown-item" href="logout">Logout</a>
+                                    <a class="dropdown-item" href="{{ route('logout') }}">Logout</a>
                                 </li>
                             </div>
                         </ul>
