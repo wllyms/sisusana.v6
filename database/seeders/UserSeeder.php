@@ -17,18 +17,18 @@ class UserSeeder extends Seeder
         DB::table('users')->truncate();
 
         DB::table('users')->insert([
-            'username' => 'fajar',
-            'password' => Hash::make('321'),
-            'nama_lengkap' => 'M.Fajar Pratama',
-            'email' => 'fajar@gmail.com',
+            'username' => 'super',
+            'password' => Hash::make('diklit1234'),
+            'nama_lengkap' => 'Team IT',
+            'email' => 'teamit@gmail.com',
             'level' => 'Super Admin',
         ]);
 
         DB::table('users')->insert([
-            'username' => 'smith',
-            'password' => Hash::make('321'),
-            'nama_lengkap' => 'Smith Willyams T',
-            'email' => 'smith@gmail.com',
+            'username' => 'admin',
+            'password' => Hash::make('1234'),
+            'nama_lengkap' => 'admin',
+            'email' => 'admin@gmail.com',
             'level' => 'Admin Biasa',
         ]);
     }
