@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Grup;
 use App\Models\Pertanyaan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class PertanyaanController extends Controller
@@ -12,8 +13,11 @@ class PertanyaanController extends Controller
     function tampil()
     {
         $pertanyaan = Pertanyaan::get();
-
-        return view('manajemen-pertanyaan.tampil', compact('pertanyaan'));
+        if (is_null(Auth::user())) {
+            return redirect('/login');
+        } else {
+            return view('manajemen-pertanyaan.tampil', compact('pertanyaan'));
+        }
     }
 
     function tambah()

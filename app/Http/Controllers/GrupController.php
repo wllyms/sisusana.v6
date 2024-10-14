@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Grup;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class GrupController extends Controller
@@ -11,8 +12,11 @@ class GrupController extends Controller
     function tampil()
     {
         $grup = Grup::get();
-
-        return view('manajemen-grup.tampil', compact('grup'));
+        if (is_null(Auth::user())) {
+            return redirect('/login');
+        } else {
+            return view('manajemen-grup.tampil', compact('grup'));
+        }
     }
 
     function tambah()
