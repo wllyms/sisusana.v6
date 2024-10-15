@@ -8,6 +8,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\JawabanController;
 use App\Http\Controllers\PertanyaanController;
 use App\Models\Jawaban;
+use App\Models\Pertanyaan;
 use FontLib\Table\Type\name;
 
 Route::get('/manajemen-pertanyaan', function () {
@@ -57,19 +58,29 @@ Route::post('/hapus-user/{id}', [TuserController::class, 'hapus'])
 
 // ====== Manajemen Grup ======
 Route::get('/manajemen-grup', [GrupController::class, 'tampil'])->name('manajemen-grup.tampil');
-Route::get('/tambah-grup/tambah', [GrupController::class, 'tambah'])->name('manajemen-grup.tambah')->middleware('admin');
-Route::post('/manajemen-grup/submit', [GrupController::class, 'submit'])->name('manajemen-grup.submit')->middleware('admin');
-Route::get('/edit-grup/{id}', [GrupController::class, 'edit'])->name('manajemen-grup.edit')->middleware('admin');
-Route::post('/exedit-grup/{id}', [GrupController::class, 'exedit'])->name('manajemen-grup.exedit')->middleware('admin');
-Route::post('/hapus-grup/{id}', [GrupController::class, 'hapus'])->name('manajemen-grup.hapus')->middleware('admin');
+Route::get('/tambah-grup/tambah', [GrupController::class, 'tambah'])
+->name('manajemen-grup.tambah')->middleware('admin');
+Route::post('/manajemen-grup/submit', [GrupController::class, 'submit'])
+->name('manajemen-grup.submit')->middleware('admin');
+Route::get('/edit-grup/{id}', [GrupController::class, 'edit'])
+->name('manajemen-grup.edit')->middleware('admin');
+Route::post('/exedit-grup/{id}', [GrupController::class, 'exedit'])
+->name('manajemen-grup.exedit')->middleware('admin');
+Route::post('/hapus-grup/{id}', [GrupController::class, 'hapus'])
+->name('manajemen-grup.hapus')->middleware('admin');
 
 // ====== Manajemen Pertanyaan ======
 Route::get('/manajemen-pertanyaan', [PertanyaanController::class, 'tampil'])->name('manajemen-pertanyaan.tampil');
-Route::get('/tambah-pertanyaan/tambah', [PertanyaanController::class, 'tambah'])->name('manajemen-pertanyaan.tambah');
-Route::get('/tambah-pertanyaan/tambah', [PertanyaanController::class, 'select_grup'])->name('manajemen-pertanyaan.select_grup');
-Route::post('/manajemen-pertanyaan/submit', [PertanyaanController::class, 'submit'])->name('manajemen-pertanyaan.submit');
-Route::get('/edit-pertanyaan/{id}', [PertanyaanController::class, 'edit'])->name('manajemen-pertanyaan.edit');
-Route::post('/exedit-pertanyaan/{id}', [PertanyaanController::class, 'exedit'])->name('manajemen-pertanyaan.exedit');
+Route::get('/tambah-pertanyaan/tambah', [PertanyaanController::class, 'tambah'])
+->name('manajemen-pertanyaan.tambah')->middleware('admin');
+Route::get('/tambah-pertanyaan/tambah', [PertanyaanController::class, 'select_grup'])
+->name('manajemen-pertanyaan.select_grup')->middleware('admin');
+Route::post('/manajemen-pertanyaan/submit', [PertanyaanController::class, 'submit'])
+->name('manajemen-pertanyaan.submit')->middleware('admin');
+Route::get('/edit-pertanyaan/{id}', [PertanyaanController::class, 'edit'])
+->name('manajemen-pertanyaan.edit')->middleware('admin');
+Route::post('/exedit-pertanyaan/{id}', [PertanyaanController::class, 'exedit'])
+->name('manajemen-pertanyaan.exedit')->middleware('admin');
 Route::post('/hapus-pertanyaan/{id}', [PertanyaanController::class, 'hapus'])->name('manajemen-pertanyaan.hapus');
 
 // ====== SURVEY ======

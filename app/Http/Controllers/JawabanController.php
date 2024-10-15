@@ -86,50 +86,50 @@ class JawabanController extends Controller
         $startDate = $request->input('dtanggal');
         $endDate = $request->input('stanggal');
         $layanan = $request->input('jlayanan');
-
+    
+        if ($endDate) {
+            $endDate = date('Y-m-d 23:59:59', strtotime($endDate));
+        }
+    
         $pertanyaan = Pertanyaan::with(['jawaban' => function ($query) use ($startDate, $endDate, $layanan) {
             if ($startDate && $endDate) {
                 $query->whereBetween('tjawaban.created_at', [$startDate, $endDate]);
             }
-
+    
             if ($layanan) {
                 $query->join('tsurvey', 'tjawaban.survey_id', '=', 'tsurvey.id')
                     ->where('tsurvey.jlayanan', $layanan);
             }
         }])->get();
-
+    
         $dataPersentase = [];
-
+    
         foreach ($pertanyaan as $pertanyaanItem) {
-            // Ambil jawaban yang telah difilter untuk setiap pertanyaan
             $jawaban = $pertanyaanItem->jawaban;
-
-            // Hitung jumlah jawaban per kategori
+    
             $jumlahA = $jawaban->where('jawaban', 'A')->count();
             $jumlahB = $jawaban->where('jawaban', 'B')->count();
             $jumlahC = $jawaban->where('jawaban', 'C')->count();
             $jumlahD = $jawaban->where('jawaban', 'D')->count();
-            $totRespon = $jawaban->count(); // Total respon untuk pertanyaan ini
-
-            // Hitung total jawaban
+            $totRespon = $jawaban->count();
+    
             $totalJawaban = $jumlahA + $jumlahB + $jumlahC + $jumlahD;
-
-            // Hitung persentase
+    
             $persenA = $totalJawaban > 0 ? ($jumlahA / $totalJawaban) * 100 : 0;
             $persenB = $totalJawaban > 0 ? ($jumlahB / $totalJawaban) * 100 : 0;
             $persenC = $totalJawaban > 0 ? ($jumlahC / $totalJawaban) * 100 : 0;
             $persenD = $totalJawaban > 0 ? ($jumlahD / $totalJawaban) * 100 : 0;
-
-            // Menghitung rata-rata berdasarkan bobot nilai
+    
             if ($totalJawaban > 0) {
                 $totalNilai = ($jumlahA * 4) + ($jumlahB * 3) + ($jumlahC * 2) + ($jumlahD * 1);
-                $nilaiMaksimum = $totalJawaban * 4; // Maksimum nilai = total jawaban * 4
+                $nilaiMaksimum = $totalJawaban * 4;
                 $rataRataPersen = ($totalNilai / $nilaiMaksimum) * 100;
+                $ikm = ($totalNilai / $totRespon) * 25;
             } else {
-                $rataRataPersen = 0; // Nilai default jika tidak ada jawaban
+                $rataRataPersen = 0;
+                $ikm = 0;
             }
-
-            // Menyimpan data ke array
+    
             $dataPersentase[] = [
                 'pertanyaan' => $pertanyaanItem,
                 'jumlahA' => $jumlahA,
@@ -141,11 +141,14 @@ class JawabanController extends Controller
                 'persenC' => round($persenC),
                 'persenD' => round($persenD),
                 'rataRata' => round($rataRataPersen, 2),
+                'ikm' => round($ikm, 2),
             ];
         }
-
+    
         return view('hasil.persentase-pertanyaan', compact('dataPersentase', 'totRespon', 'startDate', 'endDate', 'layanan'));
     }
+    
+    
 
     //tampilan laporan
     function tampillaporan(Request $request)
@@ -156,8 +159,11 @@ class JawabanController extends Controller
 
         $query = Survey::query();
 
+        // Menangani format tanggal
         if ($dtanggal && $stanggal) {
-            $query->whereBetween('tanggal', [$dtanggal, $stanggal]);
+            // Menyesuaikan waktu akhir untuk stanggal
+            $stanggal = \Carbon\Carbon::parse($stanggal)->endOfDay(); // Mengatur waktu ke akhir hari
+            $query->whereBetween('created_at', [$dtanggal, $stanggal]);
         }
 
         if ($layanan) {
@@ -170,6 +176,7 @@ class JawabanController extends Controller
 
         return view('hasil.laporan', compact('survey', 'totRespon'));
     }
+
 
     //tampilan detail laporan
     function detaillaporan($id)
@@ -193,13 +200,11 @@ class JawabanController extends Controller
     //tampilan detail rekam semua kuisioner
     function detailrekapsemua()
     {
-        $survey = Survey::with('jawaban')->get();
+        $survey = Survey::with('jawaban')
+            ->orderByRaw("FIELD(jlayanan, 'Instalasi Gawat Darurat', 'MCU', 'Pendaftaran', 'Penunjang', 'Instalasi Rawat Inap', 'Instalasi Rawat Jalan')")
+            ->get();
         $pertanyaan = Pertanyaan::get();
         $totalResponden = Survey::count();
-
-        $totalNilaiPerPertanyaan = [];
-
-        $totalPertanyaan = $pertanyaan->count();
 
         $totalNilaiPerPertanyaan = [];
         $NRRPerPertanyaan = [];
@@ -238,7 +243,7 @@ class JawabanController extends Controller
         }
 
         foreach ($NRRPerPertanyaan as $pertanyaanId => $NRR) {
-            $NRRTertimbangPerPertanyaan[$pertanyaanId] = $NRR * (1 / $totalPertanyaan);
+            $NRRTertimbangPerPertanyaan[$pertanyaanId] = $NRR * (1 / $pertanyaan->count());
             $totalNRRTertimbang = array_sum($NRRTertimbangPerPertanyaan);
         }
 
@@ -246,10 +251,10 @@ class JawabanController extends Controller
             $IKMPerPertanyaan[$pertanyaanId] = $NRRTertimbang * 25;
         }
 
-
         // Mengirim data ke view
         return view('hasil.rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan', 'NRRTertimbangPerPertanyaan', 'IKMPerPertanyaan', 'totalNRRTertimbang'));
     }
+
 
     //tampilan detail rekap semua kritik
     public function detailrekapkritik()
@@ -321,125 +326,7 @@ class JawabanController extends Controller
 
         return view('hasil.cetak-rekap-kritik', compact('nrrPerResponden', 'pertanyaan'));
     }
-    // public function exportKritikPDF()
-    // {
-    //     $survey = Survey::with('jawaban')->get();
-    //     $pertanyaan = Pertanyaan::get();
-
-    //     $nrrPerResponden = [];
-
-    //     foreach ($survey as $data) {
-    //         $totalNilai = 0;
-    //         $jumlahJawaban = 0;
-
-    //         foreach ($data->jawaban as $jawaban) {
-    //             switch ($jawaban->jawaban) {
-    //                 case 'A':
-    //                     $totalNilai += 4;
-    //                     break;
-    //                 case 'B':
-    //                     $totalNilai += 3;
-    //                     break;
-    //                 case 'C':
-    //                     $totalNilai += 2;
-    //                     break;
-    //                 case 'D':
-    //                     $totalNilai += 1;
-    //                     break;
-    //             }
-    //             $jumlahJawaban++;
-    //         }
-
-    //         $nrr = $jumlahJawaban > 0 ? ($totalNilai / $jumlahJawaban) * 25 : 0; 
-    //         $nrrPerResponden[] = [
-    //             'responden_id' => $data->id, 
-    //             'nrr' => $nrr,
-    //             'layanan' => $data->jlayanan, 
-    //             'usia' => $data->usia, 
-    //             'kritik' => $data->kritik, 
-    //         ];
-    //     }
-
-    //     $mpdf = new Mpdf();
-
-    //     $html = view('hasil.cetak-rekap-kritik', compact('nrrPerResponden', 'pertanyaan'))->render();
-
-    //     $mpdf->WriteHTML($html);
-
-    //     $tanggal = date('d-m-Y');
-    //     $namaFile = $tanggal .'_Laporan_Rekap_Kritik' . '.pdf';
-
-    //     $mpdf->Output($namaFile, 'D');
-    // }
-
-    // public function exportSurveyPDF()
-    // {
-    //     $survey = Survey::with('jawaban')->get();
-    //     $pertanyaan = Pertanyaan::get();
-    //     $totalResponden = Survey::count();
-
-    //     $totalNilaiPerPertanyaan = [];
-
-    //     $totalPertanyaan = $pertanyaan->count();
-
-    //     $totalNilaiPerPertanyaan = [];
-    //     $NRRPerPertanyaan = [];
-    //     $NRRTertimbangPerPertanyaan = [];
-    //     $IKMPerPertanyaan = [];
-
-    //     $survey->each(function ($surv) use (&$totalNilaiPerPertanyaan) {
-    //         $surv->jawaban->each(function ($jawab) use (&$totalNilaiPerPertanyaan) {
-    //             switch ($jawab->jawaban) {
-    //                 case 'A':
-    //                     $jawab->jawaban = 4;
-    //                     break;
-    //                 case 'B':
-    //                     $jawab->jawaban = 3;
-    //                     break;
-    //                 case 'C':
-    //                     $jawab->jawaban = 2;
-    //                     break;
-    //                 case 'D':
-    //                     $jawab->jawaban = 1;
-    //                     break;
-    //                 default:
-    //                     $jawab->jawaban = 0;
-    //             }
-
-    //             $pertanyaanId = $jawab->pertanyaan_id; 
-    //             if (!isset($totalNilaiPerPertanyaan[$pertanyaanId])) {
-    //                 $totalNilaiPerPertanyaan[$pertanyaanId] = 0;
-    //             }
-    //             $totalNilaiPerPertanyaan[$pertanyaanId] += $jawab->jawaban;
-    //         });
-    //     });
-
-    //     foreach ($totalNilaiPerPertanyaan as $pertanyaanId => $totalNilai) {
-    //         $NRRPerPertanyaan[$pertanyaanId] = ($totalResponden > 0) ? $totalNilai / $totalResponden : 0;
-    //     }
-
-    //     foreach ($NRRPerPertanyaan as $pertanyaanId => $NRR) {
-    //         $NRRTertimbangPerPertanyaan[$pertanyaanId] = $NRR * (1 / $totalPertanyaan);
-    //         $totalNRRTertimbang = array_sum($NRRTertimbangPerPertanyaan);
-    //     }   
-
-    //     foreach ($NRRTertimbangPerPertanyaan as $pertanyaanId => $NRRTertimbang) {
-    //         $IKMPerPertanyaan[$pertanyaanId] = $NRRTertimbang * 25;
-    //     }
-
-
-    //      // Inisialisasi mPDF
-    //      $mpdf = new Mpdf();
-
-    //      $html = view('hasil.cetak-rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan','NRRTertimbangPerPertanyaan','IKMPerPertanyaan','totalNRRTertimbang'))->render();
-
-    //      $mpdf->WriteHTML($html);
-
-    //      $tanggal = date('d-m-Y'); 
-    //      $namaFile = $tanggal .'_Laporan_Rekap_Kuisioner' . '.pdf';
-
-    //      $mpdf->Output($namaFile, 'D'); 
-    // }
+    
 
     public function exportSurveyExcel()
     {

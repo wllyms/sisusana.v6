@@ -16,17 +16,26 @@ class SurveyExport implements FromView, WithStyles, WithHeadings
 {
     public function view(): View
     {
-        $survey = Survey::with('jawaban')->get();
-        $pertanyaan = Pertanyaan::get();
+        $pertanyaan = Pertanyaan::all(); // Ambil semua pertanyaan
         $totalResponden = Survey::count();
-        
+
         $totalNilaiPerPertanyaan = [];
         $totalPertanyaan = $pertanyaan->count();
         $NRRPerPertanyaan = [];
         $NRRTertimbangPerPertanyaan = [];
         $IKMPerPertanyaan = [];
 
-        // Logika perhitungan sesuai controller
+        // Urutan jlayanan
+        $urutanJlayanan = ['Instalasi Gawat Darurat', 'MCU', 'Pendaftaran', 'Penunjang', 'Instalasi Rawat Inap', 'Instalasi Rawat Jalan'];
+
+        // Ambil semua survei dan urutkan berdasarkan jlayanan
+        $survey = Survey::with('jawaban')
+            ->get()
+            ->sortBy(function ($item) use ($urutanJlayanan) {
+                return array_search($item->jlayanan, $urutanJlayanan);
+            });
+
+        // Menghitung total nilai per pertanyaan
         $survey->each(function ($surv) use (&$totalNilaiPerPertanyaan) {
             $surv->jawaban->each(function ($jawab) use (&$totalNilaiPerPertanyaan) {
                 switch ($jawab->jawaban) {
@@ -45,25 +54,38 @@ class SurveyExport implements FromView, WithStyles, WithHeadings
             });
         });
 
+        // Menghitung NRR per pertanyaan
         foreach ($totalNilaiPerPertanyaan as $pertanyaanId => $totalNilai) {
             $NRRPerPertanyaan[$pertanyaanId] = ($totalResponden > 0) ? $totalNilai / $totalResponden : 0;
         }
 
+        // Menghitung NRR Tertimbang
         foreach ($NRRPerPertanyaan as $pertanyaanId => $NRR) {
-            $NRRTertimbangPerPertanyaan[$pertanyaanId] = $NRR * (1 / $totalPertanyaan);
+            $NRRTertimbangPerPertanyaan[$pertanyaanId] = $NRR * (1 / $totalPertanyaan); // Sesuaikan jika ada bobot
         }
 
+        // Menghitung IKM
         foreach ($NRRTertimbangPerPertanyaan as $pertanyaanId => $NRRTertimbang) {
-            $IKMPerPertanyaan[$pertanyaanId] = $NRRTertimbang * 25;
+            $IKMPerPertanyaan[$pertanyaanId] = $NRRTertimbang * 25; // Jika ingin IKM per nilai 25
         }
 
+        // Menghitung total NRR Tertimbang
         $totalNRRTertimbang = array_sum($NRRTertimbangPerPertanyaan);
 
+        // Data untuk ditampilkan di view
         return view('hasil.cetak-survey-excel', compact(
-            'survey', 'pertanyaan', 'totalNilaiPerPertanyaan',
-            'NRRPerPertanyaan', 'NRRTertimbangPerPertanyaan',
-            'IKMPerPertanyaan', 'totalNRRTertimbang'
-        ));
+            'survey', 
+            'pertanyaan',
+            'totalNilaiPerPertanyaan',
+            'NRRPerPertanyaan', 
+            'NRRTertimbangPerPertanyaan',
+            'IKMPerPertanyaan', 
+            'totalNRRTertimbang'
+        ))->with([
+            'NRRTertimbangDisplay' => array_map(function($value) {
+                return round($value, 3); // Bulatkan untuk ditampilkan
+            }, $NRRTertimbangPerPertanyaan)
+        ]);
     }
 
     public function headings(): array

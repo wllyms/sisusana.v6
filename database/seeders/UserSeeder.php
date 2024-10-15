@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
 
         DB::table('users')->insert([
             'username' => 'super',
-            'password' => Hash::make('diklit1234'),
+            'password' => Hash::make('12diklit34'),
             'nama_lengkap' => 'Team IT',
             'email' => 'teamit@gmail.com',
             'level' => 'Super Admin',
@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
 
         DB::table('users')->insert([
             'username' => 'admin',
-            'password' => Hash::make('1234'),
+            'password' => Hash::make('diklit1234'),
             'nama_lengkap' => 'admin',
             'email' => 'admin@gmail.com',
             'level' => 'Admin Biasa',

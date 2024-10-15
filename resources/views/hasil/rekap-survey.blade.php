@@ -124,7 +124,7 @@
                                 <tr class="bg-info text-center">
                                     <td colspan='2'><b>NRR Tertimbang/Unsur</b></td>
                                     @foreach ($pertanyaan as $data)
-                                        <td><b>{{ number_format(($NRRTertimbangPerPertanyaan[$data->id] ?? 1)/100, 3) }}</b></td>
+                                        <td><b>{{ number_format($NRRTertimbangPerPertanyaan[$data->id] ?? 0, 3) }}</b></td>
                                     @endforeach
                                     <td colspan="9"><b>{{ number_format($totalNRRTertimbang, 3) }}</b></td>
                                 </tr>

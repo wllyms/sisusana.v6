@@ -94,6 +94,31 @@
                          Jumlah Responden : <b> {{ $totRespon }} Responden </b>
                 <br><br>
            </div>
+           <div class="row">
+                <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table mt-3">
+                            <thead>
+                            <tr>
+                                <th scope="col">Unsur Pertanyaan</th>
+                                <th scope="col">Persentase IKM</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($dataPersentase as $data)
+                            <tr>
+                                <td>{{ $data['pertanyaan']->pertanyaan }}</td> <!-- Tampilkan pertanyaan -->
+                                <td>{{ number_format($data['rataRata']) }}%</td> <!-- Tampilkan persentase IKM -->
+                                
+                            </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+           </div>
            <div class="container p-0 d-block">
             <div class="row">
               @foreach ($dataPersentase as $data)
