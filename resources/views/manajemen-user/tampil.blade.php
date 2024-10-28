@@ -9,6 +9,9 @@
                 <a href="/manajemen-user/tambah" class="btn btn-primary">
                     <i class="icon-user-follow"></i> Tambah User
                 </a>
+                <button type="button" class="btn btn-primary " style="margin-left: 900px" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    <i class="far fa-sticky-note"></i> Catatan ! 
+                </button>
             </div>
         </div>
         <div class="row">
@@ -63,4 +66,40 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Manajemen User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <p><b>Menu Manajemen User Hanya Bisa Di Akses Oleh SUPER ADMIN !</b></p>
+            <br>
+            <p>Default Password !
+                <br>
+                SUPER ADMIN
+                <br>
+                username : superadmin
+                <br>
+                password : 12diklit34
+                <br>
+                ===========================
+                <br>
+                ADMIN BIASA
+                <br>
+                username : admin
+                <br>
+                password : diklit1234
+            </p>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+        </div>
+    </div>
+  
 @endsection

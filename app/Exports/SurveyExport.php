@@ -1,39 +1,56 @@
 <?php
-
 namespace App\Exports;
 
+use Carbon\Carbon;
 use App\Models\Survey;
 use App\Models\Pertanyaan;
+use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Illuminate\Contracts\View\View;
 
 class SurveyExport implements FromView, WithStyles, WithHeadings
 {
+    protected $dtanggal;
+    protected $stanggal;
+    protected $layanan;
+
+    public function __construct($dtanggal, $stanggal, $layanan)
+    {
+        // Format tanggal dengan Carbon
+        $this->dtanggal = Carbon::parse($dtanggal)->startOfDay();
+        $this->stanggal = Carbon::parse($stanggal)->endOfDay();
+        $this->layanan = $layanan;
+    }
+
     public function view(): View
     {
-        $pertanyaan = Pertanyaan::all(); // Ambil semua pertanyaan
-        $totalResponden = Survey::count();
+        $pertanyaan = Pertanyaan::all();
+        $query = Survey::with('jawaban');
 
+        // Apply filters
+        if ($this->dtanggal) {
+            $query->where('created_at', '>=', $this->dtanggal);
+        }
+        if ($this->stanggal) {
+            $query->where('created_at', '<=', $this->stanggal);
+        }
+        if ($this->layanan) {
+            $query->where('jlayanan', $this->layanan);
+        }
+
+        $survey = $query->orderByRaw("FIELD(jlayanan, 'Instalasi Gawat Darurat', 'MCU', 'Pendaftaran', 'Penunjang', 'Instalasi Rawat Inap', 'Instalasi Rawat Jalan')")
+                        ->get();
+
+        $totalResponden = $survey->count();
         $totalNilaiPerPertanyaan = [];
         $totalPertanyaan = $pertanyaan->count();
         $NRRPerPertanyaan = [];
         $NRRTertimbangPerPertanyaan = [];
         $IKMPerPertanyaan = [];
-
-        // Urutan jlayanan
-        $urutanJlayanan = ['Instalasi Gawat Darurat', 'MCU', 'Pendaftaran', 'Penunjang', 'Instalasi Rawat Inap', 'Instalasi Rawat Jalan'];
-
-        // Ambil semua survei dan urutkan berdasarkan jlayanan
-        $survey = Survey::with('jawaban')
-            ->get()
-            ->sortBy(function ($item) use ($urutanJlayanan) {
-                return array_search($item->jlayanan, $urutanJlayanan);
-            });
 
         // Menghitung total nilai per pertanyaan
         $survey->each(function ($surv) use (&$totalNilaiPerPertanyaan) {
@@ -128,4 +145,3 @@ class SurveyExport implements FromView, WithStyles, WithHeadings
         $sheet->getStyle('A' . $sheet->getHighestRow() . ':L' . $sheet->getHighestRow())->getFont()->setBold(true);
     }
 }
-

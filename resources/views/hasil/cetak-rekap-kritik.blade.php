@@ -69,14 +69,13 @@
         <h4 class="text-center"><b>Laporan Rekap Kritik dan Saran</b></h4>
         <br>
         <br>
-        <br>
         <table class="table table-bordered mt-4" >
             <tr class="text-center bg-info">
-                <td><b>No. Responden</b></td>
-                <td><b>Usia</b></td>
-                <td><b>Layanan</b></td>
-                <td><b>NRR Survey</b></td>
-                <td><b>Kritik dan Saran</b></td> 
+                <td>No. Responden</td>
+                <td>Usia</td>
+                <td>Layanan</td>
+                <td>NRR Survey</td>
+                <td>Kritik dan Saran</td> 
             </tr>
           <tbody>
 
@@ -111,8 +110,8 @@
         var opt = {
             margin:       0.5,
             filename:     timestamp + '_laporan-rekap-kritik.pdf', 
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2 },
+            image:        { type: 'jpeg', quality: 2 },
+            html2canvas:  { scale: 1.5 },
             jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
 

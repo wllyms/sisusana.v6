@@ -1,7 +1,4 @@
 <?php
-
-//RekapKritikExport
-
 namespace App\Exports;
 
 use Carbon\Carbon;
@@ -17,9 +14,33 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class RekapKritikExport implements FromCollection, WithHeadings, WithMapping, WithColumnWidths, WithStyles, WithEvents
 {
+    protected $dtanggal;
+    protected $stanggal;
+    protected $layanan;
+
+    public function __construct($dtanggal, $stanggal, $layanan)
+    {
+        $this->dtanggal = $dtanggal ? Carbon::parse($dtanggal)->startOfDay() : null;
+        $this->stanggal = $stanggal ? Carbon::parse($stanggal)->endOfDay() : null;
+        $this->layanan = $layanan;
+    }
+
     public function collection()
     {
-        return Survey::with('jawaban')->get();
+        // Query untuk mendapatkan survey dengan filter
+        $surveyQuery = Survey::with('jawaban');
+
+        // Menambahkan filter berdasarkan tanggal jika keduanya ada
+        if ($this->dtanggal && $this->stanggal) {
+            $surveyQuery->whereBetween('created_at', [$this->dtanggal, $this->stanggal]);
+        }
+
+        // Menambahkan filter berdasarkan layanan jika ada
+        if ($this->layanan) {
+            $surveyQuery->where('jlayanan', $this->layanan);
+        }
+
+        return $surveyQuery->get();
     }
 
     public function map($survey): array
@@ -78,8 +99,6 @@ class RekapKritikExport implements FromCollection, WithHeadings, WithMapping, Wi
         ];
     }
 
-
-
     public function styles(Worksheet $sheet): array
     {
         // Gaya untuk header (baris 4)
@@ -131,11 +150,3 @@ class RekapKritikExport implements FromCollection, WithHeadings, WithMapping, Wi
         ];
     }
 }
-
-
-
-
-
-
-
-

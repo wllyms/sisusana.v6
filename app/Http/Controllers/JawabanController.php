@@ -255,6 +255,91 @@ class JawabanController extends Controller
         return view('hasil.rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan', 'NRRTertimbangPerPertanyaan', 'IKMPerPertanyaan', 'totalNRRTertimbang'));
     }
 
+    //tampilan detail rekap filter kuisioner
+    public function rekapKuisionerFilter(Request $request)
+    {
+        // Ambil parameter dari request
+        $dtanggal = $request->input('dtanggal');
+        $stanggal = $request->input('stanggal');
+        $layanan = $request->input('layanan');
+
+        // Pastikan format tanggal sesuai dengan created_at
+        $dtanggal = $dtanggal ? Carbon::parse($dtanggal)->startOfDay() : null;
+        $stanggal = $stanggal ? Carbon::parse($stanggal)->endOfDay() : null;
+
+        // Query Survey berdasarkan filter
+        $survey = Survey::with('jawaban')
+            ->when($dtanggal, function ($query) use ($dtanggal) {
+                return $query->where('created_at', '>=', $dtanggal);
+            })
+            ->when($stanggal, function ($query) use ($stanggal) {
+                return $query->where('created_at', '<=', $stanggal);
+            })
+            ->when($layanan, function ($query) use ($layanan) {
+                return $query->where('jlayanan', $layanan); // Typo diperbaiki dari 'jlyanan' ke 'jlayanan'
+            })
+            ->orderByRaw("FIELD(jlayanan, 'Instalasi Gawat Darurat', 'MCU', 'Pendaftaran', 'Penunjang', 'Instalasi Rawat Inap', 'Instalasi Rawat Jalan')")
+            ->get();
+
+        $pertanyaan = Pertanyaan::get();
+        $totalResponden = $survey->count(); // Hitung jumlah responden yang terfilter
+
+        // Proses perhitungan
+        $totalNilaiPerPertanyaan = [];
+        $NRRPerPertanyaan = [];
+        $NRRTertimbangPerPertanyaan = [];
+        $IKMPerPertanyaan = [];
+        $totalNRRTertimbang = 0;
+
+        $survey->each(function ($surv) use (&$totalNilaiPerPertanyaan) {
+            $surv->jawaban->each(function ($jawab) use (&$totalNilaiPerPertanyaan) {
+                switch ($jawab->jawaban) {
+                    case 'A':
+                        $jawab->jawaban = 4;
+                        break;
+                    case 'B':
+                        $jawab->jawaban = 3;
+                        break;
+                    case 'C':
+                        $jawab->jawaban = 2;
+                        break;
+                    case 'D':
+                        $jawab->jawaban = 1;
+                        break;
+                    default:
+                        $jawab->jawaban = 0;
+                }
+
+                $pertanyaanId = $jawab->pertanyaan_id;
+                if (!isset($totalNilaiPerPertanyaan[$pertanyaanId])) {
+                    $totalNilaiPerPertanyaan[$pertanyaanId] = 0;
+                }
+                $totalNilaiPerPertanyaan[$pertanyaanId] += $jawab->jawaban;
+            });
+        });
+
+        foreach ($totalNilaiPerPertanyaan as $pertanyaanId => $totalNilai) {
+            $NRRPerPertanyaan[$pertanyaanId] = ($totalResponden > 0) ? $totalNilai / $totalResponden : 0;
+        }
+
+        foreach ($NRRPerPertanyaan as $pertanyaanId => $NRR) {
+            $NRRTertimbangPerPertanyaan[$pertanyaanId] = $NRR * (1 / $pertanyaan->count());
+            $totalNRRTertimbang = array_sum($NRRTertimbangPerPertanyaan);
+        }
+
+        foreach ($NRRTertimbangPerPertanyaan as $pertanyaanId => $NRRTertimbang) {
+            $IKMPerPertanyaan[$pertanyaanId] = $NRRTertimbang * 25;
+        }
+
+        // Debug query atau data
+        // dd($survey);
+
+        // Mengirim data ke view
+        return view('hasil.rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan', 'NRRTertimbangPerPertanyaan', 'IKMPerPertanyaan', 'totalNRRTertimbang'));
+    }
+
+
+
 
     //tampilan detail rekap semua kritik
     public function detailrekapkritik()
@@ -288,19 +373,44 @@ class JawabanController extends Controller
         return view('hasil.rekap-kritik', compact('nrrPerResponden', 'pertanyaan'));
     }
 
-    public function exportKritikExcel()
+
+    public function exportKritikExcel(Request $request)
     {
         $tanggalWaktu = Carbon::now()->locale('id')->translatedFormat('d-m-Y');
         $fileName = $tanggalWaktu . '_Laporan_Rekap_Kritik.xlsx';
 
-        return Excel::download(new RekapKritikExport, $fileName);
+        return Excel::download(new RekapKritikExport($request->input('dtanggal'), $request->input('stanggal'), $request->input('layanan')), $fileName);
     }
 
-    public function exportKritikPDF()
+    public function exportKritikPDF(Request $request)
     {
-        $survey = Survey::with('jawaban')->get();
+        // Ambil parameter dari request
+        $dtanggal = $request->input('dtanggal');
+        $stanggal = $request->input('stanggal');
+        $layanan = $request->input('layanan');
+    
+        // Memformat tanggal jika diberikan
+        $dtanggal = $dtanggal ? Carbon::parse($dtanggal)->startOfDay() : null;
+        $stanggal = $stanggal ? Carbon::parse($stanggal)->endOfDay() : null;
+    
+        // Query untuk mendapatkan survey dengan filter
+        $surveyQuery = Survey::with('jawaban');
+    
+        // Menambahkan filter berdasarkan tanggal jika keduanya ada
+        if ($dtanggal && $stanggal) {
+            $surveyQuery->whereBetween('created_at', [$dtanggal, $stanggal]);
+        }
+    
+        // Menambahkan filter berdasarkan layanan jika ada
+        if ($layanan) {
+            $surveyQuery->where('jlayanan', $layanan);
+        }
+    
+        // Ambil data survey dengan filter yang diterapkan
+        $survey = $surveyQuery->get();
         $pertanyaan = Pertanyaan::get();
-
+    
+        // Menghitung NRR per responden
         $nrrPerResponden = $survey->map(function ($data) {
             $totalNilai = $data->jawaban->sum(function ($jawaban) {
                 return match ($jawaban->jawaban) {
@@ -312,7 +422,7 @@ class JawabanController extends Controller
                 };
             });
             $jumlahJawaban = $data->jawaban->count();
-
+    
             $nrr = $jumlahJawaban > 0 ? ($totalNilai / $jumlahJawaban) * 25 : 0;
             return [
                 'responden_id' => $data->id,
@@ -322,34 +432,58 @@ class JawabanController extends Controller
                 'kritik' => $data->kritik,
             ];
         })->toArray();
-
-
+    
         return view('hasil.cetak-rekap-kritik', compact('nrrPerResponden', 'pertanyaan'));
     }
     
+    
 
-    public function exportSurveyExcel()
+    public function exportSurveyExcel(Request $request)
     {
         $tanggalWaktu = Carbon::now()->locale('id')->translatedFormat('d-m-Y');
         $fileName = $tanggalWaktu . '_Laporan_Rekap_Kuisioner.xlsx';
 
-        return Excel::download(new SurveyExport, $fileName);
+        // Mendapatkan nilai dari permintaan (request)
+        $dtanggal = $request->input('dtanggal');
+        $stanggal = $request->input('stanggal');
+        $layanan = $request->input('layanan');
+
+        return Excel::download(new SurveyExport($dtanggal, $stanggal, $layanan), $fileName);
     }
 
-    function exportSurveyPDF()
+    public function exportSurveyPDF(Request $request)
     {
-        $survey = Survey::with('jawaban')->get();
+        // Ambil parameter dari request
+        $dtanggal = $request->input('dtanggal');
+        $stanggal = $request->input('stanggal');
+        $layanan = $request->input('layanan');
+
+        // Pastikan format tanggal sesuai dengan created_at
+        $dtanggal = $dtanggal ? Carbon::parse($dtanggal)->startOfDay() : null;
+        $stanggal = $stanggal ? Carbon::parse($stanggal)->endOfDay() : null;
+
+        // Query Survey berdasarkan filter
+        $survey = Survey::with('jawaban')
+            ->when($dtanggal, function ($query) use ($dtanggal) {
+                return $query->where('created_at', '>=', $dtanggal);
+            })
+            ->when($stanggal, function ($query) use ($stanggal) {
+                return $query->where('created_at', '<=', $stanggal);
+            })
+            ->when($layanan, function ($query) use ($layanan) {
+                return $query->where('jlayanan', $layanan); // Pastikan nama kolom sesuai
+            })
+            ->get();
+
         $pertanyaan = Pertanyaan::get();
-        $totalResponden = Survey::count();
-
-        $totalNilaiPerPertanyaan = [];
-
+        $totalResponden = $survey->count(); // Hitung jumlah responden yang terfilter
         $totalPertanyaan = $pertanyaan->count();
 
         $totalNilaiPerPertanyaan = [];
         $NRRPerPertanyaan = [];
         $NRRTertimbangPerPertanyaan = [];
         $IKMPerPertanyaan = [];
+        $totalNRRTertimbang = 0;
 
         $survey->each(function ($surv) use (&$totalNilaiPerPertanyaan) {
             $surv->jawaban->each(function ($jawab) use (&$totalNilaiPerPertanyaan) {
@@ -384,14 +518,15 @@ class JawabanController extends Controller
 
         foreach ($NRRPerPertanyaan as $pertanyaanId => $NRR) {
             $NRRTertimbangPerPertanyaan[$pertanyaanId] = $NRR * (1 / $totalPertanyaan);
-            $totalNRRTertimbang = array_sum($NRRTertimbangPerPertanyaan);
         }
+
+        $totalNRRTertimbang = array_sum($NRRTertimbangPerPertanyaan);
 
         foreach ($NRRTertimbangPerPertanyaan as $pertanyaanId => $NRRTertimbang) {
             $IKMPerPertanyaan[$pertanyaanId] = $NRRTertimbang * 25;
         }
 
-
+        // Mengirim data ke view PDF
         return view('hasil.cetak-rekap-survey', compact('survey', 'pertanyaan', 'totalNilaiPerPertanyaan', 'NRRPerPertanyaan', 'NRRTertimbangPerPertanyaan', 'IKMPerPertanyaan', 'totalNRRTertimbang'));
     }
 

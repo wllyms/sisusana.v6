@@ -63,10 +63,6 @@
             border: 1px solid black !important; /* Border untuk sel */
         }
     </style>
-    <script>
-        window.onload = function() {
-        };
-    </script>
 
 </head>
 
@@ -74,7 +70,7 @@
     <div class="container mt-4">
         <br>
         <h3 class="text-center"><b>SISUSANA</b></h3>
-        <h4 class="text-center"><b>Laporan Rekap Semua Kuisioner</b></h4>
+        <h4 class="text-center"><b>Laporan Rekap Kuisioner</b></h4>
         <br>
         <br>
         <br>
@@ -99,7 +95,7 @@
                 </tr>
                 @endforeach
         
-                <tr class="bg-info">
+                <tr class="bg-info text-center">
                     <td colspan='2'>Nilai/Unsur</td>
                     @foreach ($pertanyaan as $data)
                         <td>{{ $totalNilaiPerPertanyaan[$data->id] ?? 0 }}</td>

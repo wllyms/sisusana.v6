@@ -97,9 +97,11 @@ Route::post('/hapuslaporan/{id}', [JawabanController::class, 'hapuslaporan'])->n
 
 
 Route::get('/rekapkritik', [JawabanController::class, 'detailrekapkritik'])->name('rekap.kritik');
+Route::get('/rekap-kritikfilter', [JawabanController::class, 'rekapKuisionerFilter'])->name('rekap.kritik-filter');
 Route::get('/pdf-rekapkritik', [JawabanController::class, 'exportKritikPDF'])->name('export.kritik-pdf');
 Route::get('/excel-rekapkritik', [JawabanController::class, 'exportKritikExcel'])->name('export.kritik-excel');
 
-Route::get('/rekapsurvey', [JawabanController::class, 'detailrekapsemua'])->name('rekap.detail');
+Route::get('/rekapsurvey', [JawabanController::class, 'detailrekapsemua'])->name('rekap.survey');
+Route::get('/rekap-kuisionerfilter', [JawabanController::class, 'rekapKritikFilter'])->name('rekap.kuisioner-filter');
 Route::get('/pdf-rekapsurvey', [JawabanController::class, 'exportSurveyPDF'])->name('export.survey-pdf');
 Route::get('/excel-rekapsurvey', [JawabanController::class, 'exportSurveyExcel'])->name('export.survey-excel');

@@ -80,11 +80,40 @@
                         </div>
                     </div>
                 </div>
+                @if (request('dtanggal') || request('stanggal') || request('layanan')) <!-- Cek jika ada parameter pencarian -->
                 <div class="alert alert-info" role="alert">
-                    <br>
-                    <b>Menampilkan Semua Hasil Survei</b>
-                    <br><br>
+                    @if ($survey->isNotEmpty())  <!-- Cek apakah $survey tidak kosong -->
+                        <p>Cetak Rekap Hasil Filter</p>
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-primary btn-sm dropdown-toggle text-white" type="button" data-bs-toggle="dropdown">
+                              <i class="fas fa-print"></i>
+                              Rekap Kritik dan Saran
+                            </button>
+                                <ul class="dropdown-menu" role="menu">
+                                  <li>
+                                    <a class="dropdown-item" href="{{ route('export.kritik-pdf', ['dtanggal' => request('dtanggal'), 'stanggal' => request('stanggal'), 'layanan' => request('layanan')]) }}">PDF</a>
+                                    <a class="dropdown-item" href="{{ route('export.kritik-excel', ['dtanggal' => request('dtanggal'), 'stanggal' => request('stanggal'), 'layanan' => request('layanan')]) }}" >Excel</a>
+                                  </li>
+                                </ul>
+                        </div>
+                        <div class="btn-group dropdown">
+                            <button class="btn btn-primary btn-sm dropdown-toggle text-white" type="button" data-bs-toggle="dropdown">
+                              <i class="fas fa-print"></i>
+                              Rekap Kuisioner
+                            </button>
+                                <ul class="dropdown-menu" role="menu">
+                                  <li>
+                                    <a class="dropdown-item" href="{{ route('export.survey-pdf', ['dtanggal' => request('dtanggal'), 'stanggal' => request('stanggal'), 'layanan' => request('layanan')]) }}">PDF</a>
+                                    <a class="dropdown-item" href="{{ route('export.survey-excel', ['dtanggal' => request('dtanggal'), 'stanggal' => request('stanggal'), 'layanan' => request('layanan')]) }}" >Excel</a>
+                                  </li>
+                                </ul>
+                          </div>
+                        {{-- {{ route('rekap.kuisioner-filter', ['dtanggal' => request('dtanggal'), 'stanggal' => request('stanggal'), 'layanan' => request('layanan')]) }} --}}
+                    @else
+                        <p>Tidak ada data untuk ditampilkan.</p>  <!-- Pesan jika tidak ada data -->
+                    @endif
                 </div>
+            @endif
 
                 <div class="row">
                     <div class="col-md-12">

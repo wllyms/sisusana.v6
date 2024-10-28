@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         DB::table('users')->truncate();
 
         DB::table('users')->insert([
-            'username' => 'super',
+            'username' => 'superadmin',
             'password' => Hash::make('12diklit34'),
             'nama_lengkap' => 'Team IT',
             'email' => 'teamit@gmail.com',
